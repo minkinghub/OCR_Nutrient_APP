@@ -3,6 +3,7 @@ from models.nutrient_data import Nutrient
 from datetime import datetime, date
 import pytz
 from datetime import datetime
+from controllers.auth_controller import get_current_user_id
 
 seoul_tz = pytz.timezone('Asia/Seoul')
 
@@ -21,7 +22,7 @@ def add_nutrient_to_db(nutrient: Nutrient):
                     break
     return {"message": "Nutrient added successfully"}
 
-def get_nutrients_from_db(user_id: str):
+def get_nutrients_from_db(user_id: get_current_user_id):
     today_start = datetime.combine(date.today(), datetime.min.time()).astimezone(seoul_tz)
     nutrients = product_nutrients.find({"user_id": user_id, "timestamp": {"$gte": today_start}})
     results = []

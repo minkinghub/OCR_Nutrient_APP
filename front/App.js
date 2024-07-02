@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Picker } from '@react-native-picker/picker';
+import { GraphPage, CameraPage } from "./pages";
+import "react-native-svg";
 import 'react-native-gesture-handler';
 
 function LoginScreen({ navigation }) {
@@ -83,7 +85,7 @@ function SignUpScreen({ navigation }) {
 function ImageScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Image Screen</Text>
+      <CameraPage />
     </View>
   );
 }
@@ -101,7 +103,7 @@ function MyPageScreen() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>My Page Screen</Text>
       <GraphPage />
-      <StatusBar style="auto" />
+      {/* <StatusBar style="auto" /> */}
     </View>
   );
 }

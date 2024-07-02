@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "iconic-episode-428206-c2",
+  "private_key_id": "d8dce4f6a18dcc5ffdeaf9b561a1f8eb1336811c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDAW6QILicRcdaq\nv/7knVPuj6F9TpmIkPha82CqCzyRXsUMFzA4RDOjNghnWt8xFOJ2Cdh4Drastjyr\nhmJPrvmd/DFBqjly32y9+OINdO/sQvqMI72edl8UCqhbCwLF0zwg6mD9mQtNu2wp\nWs3JGbnlbjehCd6Z+fNv9VnAH0GCHAsLThDZOpM9z8N+U8WNHMopd7SCuXQdoXP3\nnlcqzFNuc/ytuvpwNlVHdlbRGNn0+rJT017cNxX9FVsgz8BfnaJl7KcAT0BeVo+M\nKgshh3a1VeaTv/n8rCEVLWgzr6Id149lTe1ch7jXn0IlibOT0IcUfpD42ot+TxkT\nBxys6eGfAgMBAAECggEALI+OKk72wfXLMvcTR0ajAOrJEEw7CQX8YqVqyTmdKFf5\n8dkVVJOIGtETlU3Z0nbyF0IkoXtXGh+FYn7ZG3h/XvfjOUED2fakLEYRp+hlBChn\n/jrxXFozoGLvqVedptJOZZmmKllf4vv+DH56mZGaHOoxfN7acHUUzeTai8Ux2b/Z\n3RFhN6GJIPFmTI66T/dVBWeNxbWt5bxzIJA/cldJfG2847J873eT+0Kat0do0qzB\nuh/QABAn+FQCOa0Wher0f9sLyJGUNVcE8ZRlgKqq3mpkHusY88nDkkBUxeM4GL0l\n5J9cXTdvg+Y1VcXDnSGqvdfZJ4qMeSGdqo8ff7ShwQKBgQD4kTwz9iw4lZqbsi6G\nHLXs0/bwhcfQi3qh/sPB06oN1u7UohM9qe6kQ94lZAD7TBqyu+rzDIK0McA9dXEC\nXXP+WKWF9EmtkcL4DlJFeDhL9ijaf4JZ3JHtqQjHtkGyXjsUDALcGnJ4NaIHuGea\n7OjD6Lbc9fclikRMpGdb2RzpcQKBgQDGHCCHLUUtQZwgyJZPaaEW7COZgg/2rVPT\nz1D0d1yeFr2fRRkS1t0ZRmRkp7QlT3IVqvhE9pX++W8KWc2OcMDAbxXl3hmo8L3p\nKU67j1a6oSPmHgiuRky6/kV9nZGVTRAlHroauZIwJyMDHnhOOXuLMnszMgGDgEQD\n1oPLgQF0DwKBgCuucjL7duf2unXUCUL+NqZI1aONDwFCEan4OHSOetr1w4DQfqse\netaZKqfNfDKtPB/e0DooH6wE9jCWu+Zbf+/ZqjTxKiV7cRTgh2q35sTKnIFRWRnr\nniVyyB04lTEASEeMmNAPQcCIRFIxANwD+B+9fK01+Fm7g6coWRWWAPOxAoGAUAAR\nvqSwV7sz8iUuVblBHQGUyqu0CJgrzs/cUCxXUVu7jTKZEnuD424Coob6f0qatldJ\nVIgDQGi3x4VGNewgWlVBkYbj883r0tkkeydCDbF+zrF4LfAjkiuWIkjb/l+VUngb\nDSm8+AcF43+Nc4FQ+4ASMjVSWSkVzjr1E9vvm08CgYEAvIAWYgFoTJqUMHiC+aj7\n19P+fw+mTs+z4oFc8uzj8zwrcL5zsFDmYZf4phkdxP39chR6JjNRmgOInhCDwROO\nYT6zJcfLwp9Sn2HgOyB1UMSYrW1cAAv9THR5xfrBbnurk2dY3AiLEyADUoE5WYdm\naLa2uYahgLfYPD1EtsVRKug=\n-----END PRIVATE KEY-----\n",
+  "client_email": "mjk-274@iconic-episode-428206-c2.iam.gserviceaccount.com",
+  "client_id": "116485116426047245576",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mjk-274%40iconic-episode-428206-c2.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

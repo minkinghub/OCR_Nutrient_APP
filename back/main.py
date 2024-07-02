@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from models.user_model import User
-from routers.user_router import router as main_router
+from routers.user_router import router as user_router
 from middlewares.session_middleware import create_session_middleware
 
 app = FastAPI()
@@ -19,7 +19,7 @@ async def get_user(user_id: str):
         return User(**user)
     raise HTTPException(status_code=404, detail="User not found")
 
-app.include_router(main_router)
+app.include_router(user_router)
 
 @app.get("/")
 async def root():

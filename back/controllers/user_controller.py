@@ -1,22 +1,15 @@
-from fastapi import APIRouter, HTTPException, Request
 from passlib.context import CryptContext
-from motor.motor_asyncio import AsyncIOMotorClient
+from db import users_collection
 from models.user_model import User, UserUpdate
 from bson import ObjectId
-
-router = APIRouter()
+from fastapi import HTTPException, Request
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-client = AsyncIOMotorClient("mongodb+srv://minjuking:GAdeWGF35XjDLId8@cluster0.qvqzpec.mongodb.net/")
-db = client.AI_Camp_Mini
-users_collection = db.users_test
 
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-@router.put("/update_profile", response_model=User)
-async def update_profile(request: Request, update: UserUpdate):
+async def update_user_profile(request: Request, update: UserUpdate):
     if "user_id" not in request.session:
         raise HTTPException(status_code=401, detail="Not authenticated")
     

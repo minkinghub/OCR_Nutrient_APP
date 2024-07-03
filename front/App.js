@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View, TextInput, Button, StyleSheet } from 'react-native';
+import { Text, View, TextInput, Button, StyleSheet, Platform, TouchableOpacity, Modal } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -37,6 +37,8 @@ function SignUpScreen({ navigation }) {
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
   const [isAthlete, setIsAthlete] = useState(false);
+  const [showGenderPicker, setShowGenderPicker] = useState(false);
+  const [showAthletePicker, setShowAthletePicker] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -57,24 +59,48 @@ function SignUpScreen({ navigation }) {
       <Text>체중</Text>
       <TextInput style={styles.input} value={weight} onChangeText={setWeight} placeholder="Weight" />
       <Text>Gender</Text>
-      <Picker
-        selectedValue={gender}
-        style={styles.input}
-        onValueChange={(itemValue) => setGender(itemValue)}
-      >
-        <Picker.Item label="남" value="male" />
-        <Picker.Item label="여" value="female" />
-        <Picker.Item label="Other" value="other" />
-      </Picker>
+      <TouchableOpacity onPress={() => setShowGenderPicker(true)} style={styles.pickerButton}>
+        <Text style={styles.pickerButtonText}>{gender ? gender : "Select your gender"}</Text>
+      </TouchableOpacity>
+      <Modal visible={showGenderPicker} transparent={true} animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.pickerModal}>
+            <Picker
+              selectedValue={gender}
+              onValueChange={(itemValue) => {
+                setGender(itemValue);
+                setShowGenderPicker(false);
+              }}
+            >
+              <Picker.Item label="남" value="male" />
+              <Picker.Item label="여" value="female" />
+              <Picker.Item label="Other" value="other" />
+            </Picker>
+            <Button title="Done" onPress={() => setShowGenderPicker(false)} />
+          </View>
+        </View>
+      </Modal>
       <Text>운동 여부</Text>
-      <Picker
-        selectedValue={isAthlete}
-        style={styles.input}
-        onValueChange={(itemValue) => setIsAthlete(itemValue)}
-      >
-        <Picker.Item label="Yes" value={true} />
-        <Picker.Item label="No" value={false} />
-      </Picker>
+      <TouchableOpacity onPress={() => setShowAthletePicker(true)} style={styles.pickerButton}>
+        <Text style={styles.pickerButtonText}>{isAthlete ? (isAthlete === true ? "Yes" : "No") : "Are you an athlete?"}</Text>
+      </TouchableOpacity>
+      <Modal visible={showAthletePicker} transparent={true} animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.pickerModal}>
+            <Picker
+              selectedValue={isAthlete}
+              onValueChange={(itemValue) => {
+                setIsAthlete(itemValue);
+                setShowAthletePicker(false);
+              }}
+            >
+              <Picker.Item label="Yes" value={true} />
+              <Picker.Item label="No" value={false} />
+            </Picker>
+            <Button title="Done" onPress={() => setShowAthletePicker(false)} />
+          </View>
+        </View>
+      </Modal>
       <Button title="Sign Up" onPress={() => navigation.navigate('Login')} />
     </View>
   );
@@ -155,5 +181,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+  },
+  pickerButton: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    justifyContent: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+  pickerButtonText: {
+    color: 'gray',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  pickerModal: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    width: '80%',
   },
 });

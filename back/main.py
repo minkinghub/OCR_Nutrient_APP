@@ -28,7 +28,7 @@ async def get_user(user_id: str):
         return User(**user)
     raise HTTPException(status_code=404, detail="User not found")
 
-app.include_router(main_router)
+app.include_router(user_router)
 
 @app.get("/")
 async def root():

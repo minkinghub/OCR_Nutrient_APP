@@ -48,3 +48,9 @@ async def get_current_user_id(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     return {"user_id": request.session["user_id"]}
+
+@router.post("/logout")
+async def logout(request: Request):
+    if "user_id" in request.session:
+        request.session.pop("user_id")
+    return {"message": "Logout successful"}

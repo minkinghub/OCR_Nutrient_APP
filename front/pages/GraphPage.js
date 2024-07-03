@@ -5,11 +5,6 @@ import { ProgressChart, BarChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get("window").width;
 
-const progressData = {
-    labels: ["칼로리", "탄수화물", "단백질", "지방"], // 선택
-    data: [0.2, 0.4, 0.6, 0.8]
-};
-
 const progressChartConfig = {
     backgroundGradientFrom: "#FFFFFF", // 배경 시작 색
     backgroundGradientTo: "#FFFFFF", // 배경 끝 색
@@ -18,6 +13,11 @@ const progressChartConfig = {
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5,
     useShadowColorFromDataset: false // optional
+};
+
+const progressData = {
+    labels: ["탄수화물", "단백질", "지방"], // 선택
+    data: [0.4, 0.6, 0.8]
 };
 
 const barChartConfig = {

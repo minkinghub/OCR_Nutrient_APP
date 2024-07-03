@@ -36,7 +36,7 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
     <TouchableWithoutFeedback onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Image style={styles.profileImage} source={require('../assets/default-profile.jpg')} />
+          <Image style={styles.profileImage} source={require('../assets/default-profile.png')} />
           <Text>프로필 정보</Text>
           <Text>ID (수정 불가)</Text>
           <TextInput style={[styles.input, styles.nonEditable]} value={localId} editable={false} />

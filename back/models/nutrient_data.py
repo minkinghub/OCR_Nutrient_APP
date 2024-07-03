@@ -27,4 +27,3 @@ class Nutrient(BaseModel):
     vitamin_c: Optional[int] = None
     vitamin_b6: Optional[int] = None
     folic_acid: Optional[int] = None
-    user_id: str

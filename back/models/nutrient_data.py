@@ -1,29 +1,15 @@
 from pydantic import BaseModel
-from typing import Optional, Dict
 
 class Nutrient(BaseModel):
-    product_id: str
-    product_name: str
-    serving_size: str
-    calories: Optional[int] = None
-    sodium: Optional[int] = None
-    carbohydrate: Optional[int] = None
-    sugars: Optional[int] = None
-    fat: Optional[int] = None
-    trans_fat: Optional[int] = None
-    saturated_fat: Optional[int] = None
-    cholesterol: Optional[int] = None
-    protein: Optional[int] = None
-    calcium: Optional[int] = None
-    phosphorus: Optional[int] = None
-    iron: Optional[int] = None
-    potassium: Optional[int] = None
-    mineral: Optional[int] = None
-    vitamin_a_re: Optional[int] = None
-    vitamin_a_carotene: Optional[int] = None
-    vitamin_b1: Optional[int] = None
-    vitamin_b2: Optional[int] = None
-    niacin: Optional[int] = None
-    vitamin_c: Optional[int] = None
-    vitamin_b6: Optional[int] = None
-    folic_acid: Optional[int] = None
+    product_id: str  # 제품 ID
+    product_name: str  # 제품 이름
+    calories: float = 0.0  # 칼로리
+    carbohydrate: float = 0.0  # 탄수화물
+    protein: float = 0.0  # 단백질
+    fat: float = 0.0  # 지방
+    sodium: float = 0.0  # 나트륨
+    sugars: float = 0.0  # 당류
+    saturated_fat: float = 0.0  # 포화지방
+    trans_fat: float = 0.0  # 트랜스지방
+    cholesterol: float = 0.0  # 콜레스테롤
+    calcium: float = 0.0  # 칼슘

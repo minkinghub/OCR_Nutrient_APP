@@ -1,31 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 
 
 import LoginScreen from './components/LoginScreen'
 import SignUpScreen from './components/SignUpScreen'
-import StatsScreen from './components/StatsScreen'
 import MyPageScreen from './components/MyPageScreen'
-import ImageScreen from './components/ImageScreen'
+import MainTabs from './components/MainTabs'
 
-
-
-const Tab = createBottomTabNavigator();
-
-function MainTabs() {
-  return (
-    <Tab.Navigator
-      initialRouteName="Stats"
-      screenOptions={{ headerShown: false }}
-    >
-      <Tab.Screen name="Stats" component={StatsScreen} />
-      <Tab.Screen name="Image" component={ImageScreen} />
-    </Tab.Navigator>
-  );
-}
 
 const Drawer = createDrawerNavigator();
 

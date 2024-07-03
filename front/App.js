@@ -39,6 +39,22 @@ function SignUpScreen({ navigation }) {
   const [gender, setGender] = useState('');
   const [isAthlete, setIsAthlete] = useState(null);
 
+  const handleAgeChange = (text) => {
+    const numericValue = text.replace(/[^0-9]/g, '');
+    setAge(numericValue);
+  };
+
+  const handleHeightChange = (text) => {
+    const numericValue = text.replace(/[^0-9]/g, '');
+    setHeight(numericValue);
+  };
+
+  const handleWeightChange = (text) => {
+    const numericValue = text.replace(/[^0-9.]/g, '');
+    if (numericValue.split('.').length > 2) return;
+    setWeight(numericValue);
+  };
+
   return (
     <View style={styles.container}>
       <Text>ID</Text>
@@ -52,11 +68,29 @@ function SignUpScreen({ navigation }) {
         placeholder="Password"
       />
       <Text>나이</Text>
-      <TextInput style={styles.input} value={age} onChangeText={setAge} placeholder="Age" />
+      <TextInput
+        style={styles.input}
+        value={age}
+        onChangeText={handleAgeChange}
+        placeholder="(예: 25)"
+        keyboardType="numeric"
+      />
       <Text>키</Text>
-      <TextInput style={styles.input} value={height} onChangeText={setHeight} placeholder="Height" />
+      <TextInput
+        style={styles.input}
+        value={height}
+        onChangeText={handleHeightChange}
+        placeholder="(예: 170)"
+        keyboardType="numeric"
+      />
       <Text>체중</Text>
-      <TextInput style={styles.input} value={weight} onChangeText={setWeight} placeholder="Weight" />
+      <TextInput
+        style={styles.input}
+        value={weight}
+        onChangeText={handleWeightChange}
+        placeholder="(예: 65.5 소수점 첫자리까지)"
+        keyboardType="numeric"
+      />
       <Text>Gender</Text>
       <RNPickerSelect
         onValueChange={(value) => setGender(value)}

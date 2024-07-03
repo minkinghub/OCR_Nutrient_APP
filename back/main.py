@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, types, File
 from motor.motor_asyncio import AsyncIOMotorClient
 from models.user_model import User
-from routers.user_router import router as main_router
+from routers.user_router import router as user_router
 from routers.upload_router import router as upload_router
 from middlewares.cors_middleware import cors_middleware
 from middlewares.session_middleware import create_session_middleware
@@ -10,7 +10,7 @@ from google.cloud import vision
 from starlette.responses import JSONResponse
 import os
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'iconic-episode-428206-c2-d8dce4f6a18d.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'iconic-episode-428206-c2-bc5268f142db.json'
 
 app = FastAPI()
 

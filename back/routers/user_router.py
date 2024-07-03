@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 from models.user_model import User, UserCreate, UserLogin,  UserUpdate
-from controllers.auth_controller import signup, login
+from controllers.auth_controller import signup, login,logout
 from controllers.user_controller import update_user_profile
 router = APIRouter()
 
@@ -24,3 +24,7 @@ async def get_current_user_id(request: Request):
 @router.put("/update_profile", response_model=User)
 async def update_profile(request: Request, update: UserUpdate):
     return await update_user_profile(request, update)
+
+@router.post("/logout")
+async def logout_route(request: Request):
+    return await logout(request)

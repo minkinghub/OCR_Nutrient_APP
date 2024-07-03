@@ -2,3 +2,4 @@
 myenv/
 *.env
 iconic-episode-428206-c2-bc5268f142db.json
+*.pyc

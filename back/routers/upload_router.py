@@ -1,13 +1,14 @@
-# routers.py
-from fastapi import APIRouter, UploadFile, File
-from controllers.ocr_controller import process_image
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 import copy
+from models.upload_model import ImageBase64
+from controllers.upload_controller import upload_controller
 
 router = APIRouter()
 
 @router.post("/upload")
-async def upload_image(file: UploadFile = File(...)):
-    ocredText = await process_image(file)
-    extractText = copy.deepcopy(ocredText["text"])
+async def upload_router(image: ImageBase64):
+    text = upload_controller(image)
+    extractText = copy.deepcopy(text)
     print(extractText)
-    return {"text" : "으에에"}
+    return JSONResponse(content=text)

@@ -61,3 +61,9 @@ async def get_current_user_id(request: Request):
     
     # 세션에서 사용자 ID 반환
     return {"user_id": request.session["user_id"]}
+
+@router.post("/logout")
+async def logout(request: Request):
+    if "user_id" in request.session:
+        request.session.pop("user_id")
+    return {"message": "Logout successful"}

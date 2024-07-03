@@ -1,84 +1,165 @@
 import React from 'react';
-import { StyleSheet, Dimensions } from 'react-native';
-import { View } from "react-native-ui-lib";
-import { ProgressChart, BarChart } from 'react-native-chart-kit';
-
-const screenWidth = Dimensions.get("window").width;
-
-const progressChartConfig = {
-    backgroundGradientFrom: "#FFFFFF", // 배경 시작 색
-    backgroundGradientTo: "#FFFFFF", // 배경 끝 색
-    color: (opacity = 1) => `rgba(102, 00, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 글자 색깔 변경
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
-};
-
-const progressData = {
-    labels: ["탄수화물", "단백질", "지방"], // 선택
-    data: [0.4, 0.6, 0.8]
-};
-
-const barChartConfig = {
-    backgroundGradientFrom: "#FFFFFF", // 배경 시작 색
-    backgroundGradientTo: "#FFFFFF", // 배경 끝 색
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 글자 색깔 변경
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
-};
-
-const barData = {
-    labels: ["나트륨", "비타민 C", "비타민 D", "비타민 B", "비타민 E", "철분"],
-    datasets: [
-        {
-            data: [20, 45, 28, 80, 99, 43]
-        }
-    ]
-};
+import { View, Text, StyleSheet } from 'react-native';
+import { BarChart, PieChart } from 'react-native-gifted-charts';
+import { screenWidth } from 'react-native-gifted-charts/src/utils';
 
 const GraphPage = () => {
+    const pieData = [
+        {
+            value: 47,
+            color: '#6600FF',
+        },
+        { value: 54, color: '#DDDDDD' },
+    ];
+
+    const barData = [
+        {
+            value: 40,
+            label: '나트륨',
+            spacing: 2,
+            labelWidth: screenWidth* 0.11,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#177AD5',
+        },
+        { value: 20, frontColor: '#ED6665' },
+        {
+            value: 50,
+            label: '포화지방',
+            spacing: 2,
+            labelWidth: screenWidth* 0.11,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#177AD5',
+        },
+        { value: 40, frontColor: '#ED6665' },
+        {
+            value: 75,
+            label: '트랜스지방',
+            spacing: 2,
+            labelWidth: screenWidth* 0.11,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#177AD5',
+        },
+        { value: 25, frontColor: '#ED6665' },
+        {
+            value: 30,
+            label: "당류",
+            spacing: 2,
+            labelWidth: screenWidth* 0.11,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#177AD5',
+        },
+        { value: 20, frontColor: '#ED6665' },
+        {
+            value: 60,
+            label: '칼슘',
+            spacing: 2,
+            labelWidth: screenWidth* 0.11,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#177AD5',
+        },
+        { value: 40, frontColor: '#ED6665' },
+        {
+            value: 65,
+            label: '콜레스테롤',
+            spacing: 2,
+            labelWidth: screenWidth* 0.11,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#177AD5',
+        },
+        { value: 30, frontColor: '#ED6665' },
+    ];
+
     return (
-        <View style={styles.container}>
-            <ProgressChart
-                data={progressData}
-                width={screenWidth * 0.95} // Adjust width to avoid padding issues
-                height={220}
-                strokeWidth={16}
-                radius={40}
-                chartConfig={progressChartConfig}
-                hideLegend={false}
-            />
-            <View style={styles.line} />
+        <>
+            <View style={styles.row}>
+                <View style={styles.chartContainer}>
+                    <PieChart
+                        data={pieData}
+                        donut
+                        // strokeColor="yellow"
+                        // strokeWidth={1}
+                        // innerCircleBorderWidth={1}
+                        // innerCircleBorderColor={'yellow'}
+                        radius={screenWidth * 0.15}
+                        innerRadius={screenWidth * 0.1}
+                        centerLabelComponent={() => {
+                            return (
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text
+                                        style={{ fontSize: "110%", color: 'Black', fontWeight: 'bold' }}>
+                                        47%
+                                    </Text>
+                                    <Text style={{ fontSize: "90%", color: 'Black' }}>탄수화물</Text>
+                                </View>
+                            );
+                        }}
+                    />
+                </View>
+                <View style={styles.chartContainer}>
+                    <PieChart
+                        data={pieData}
+                        donut
+                        radius={screenWidth * 0.15}
+                        innerRadius={screenWidth * 0.1}
+                        centerLabelComponent={() => {
+                            return (
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text
+                                        style={{ fontSize: "110%", color: 'Black', fontWeight: 'bold' }}>
+                                        47%
+                                    </Text>
+                                    <Text style={{ fontSize: "90%", color: 'Black' }}>단백질</Text>
+                                </View>
+                            );
+                        }}
+                    />
+                </View>
+                <View style={styles.chartContainer}>
+                    <PieChart
+                        data={pieData}
+                        donut
+                        radius={screenWidth * 0.15}
+                        innerRadius={screenWidth * 0.1}
+                        centerLabelComponent={() => {
+                            return (
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text
+                                        style={{ fontSize: "110%", color: 'Black', fontWeight: 'bold' }}>
+                                        47%
+                                    </Text>
+                                    <Text style={{ fontSize: "90%", color: 'Black' }}>지방</Text>
+                                </View>
+                            );
+                        }}
+                    />
+                </View>
+            </View>
             <BarChart
                 data={barData}
-                width={screenWidth * 0.95}
-                height={220}
-                fromZero={true}
-                showBarTops={false}
-                yAxisSuffix="%"
-                chartConfig={barChartConfig}
-                verticalLabelRotation={0}
+                barWidth={screenWidth * 0.05}
+                spacing={screenWidth * 0.03}
+                roundedTop
+                xAxisThickness={2}
+                yAxisThickness={0}
+                yAxisTextStyle={{ color: 'gray' }}
+                noOfSections={4}
+                maxValue={100}
+                isAnimated
             />
-        </View>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: '#ffffff',
-        padding: 8, // Adjust padding as necessary
-    },
-    line: {
         width: '100%',
-        height: 1,
-        backgroundColor: '#000', // 선 색깔
-        marginVertical: 20, // 위아래 여백
+    },
+    chartContainer: {
+        flex: 1,
+        alignItems: 'center',
     },
 });
 

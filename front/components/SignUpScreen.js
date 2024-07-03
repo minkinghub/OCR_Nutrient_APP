@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Text, View, TextInput, Button, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import PasswordInput from './PasswordInput'; // 공통 컴포넌트 임포트
+import PasswordInput from './PasswordInput';
 
-function SignUpScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [age, setAge] = useState('');
@@ -29,11 +29,11 @@ function SignUpScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
       <View style={styles.container}>
         <Text>ID</Text>
         <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
-        <Text>Password</Text>
+        <Text>비밀번호</Text>
         <PasswordInput
           value={password}
           onChangeText={setPassword}
@@ -63,12 +63,13 @@ function SignUpScreen({ navigation }) {
           placeholder="(예: 65.5 소수점 첫자리까지)"
           keyboardType="numeric"
         />
-        <Text>Gender</Text>
+        <Text>성별</Text>
         <RNPickerSelect
           onValueChange={(value) => setGender(value)}
           items={[
             { label: '남', value: 'male' },
-            { label: '여', value: 'female' }
+            { label: '여', value: 'female' },
+            { label: 'Other', value: 'other' },
           ]}
           style={pickerSelectStyles}
           placeholder={{ label: "Select your gender", value: null }}
@@ -115,7 +116,6 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: 30,
     marginBottom: 12,
-    width: '100%',
   },
   inputAndroid: {
     fontSize: 16,
@@ -127,8 +127,5 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: 30,
     marginBottom: 12,
-    width: '100%',
   },
 });
-
-export default SignUpScreen;

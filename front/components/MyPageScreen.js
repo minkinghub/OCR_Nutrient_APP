@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button, Image, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Image, ScrollView, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import PasswordInput from './PasswordInput'; // 공통 컴포넌트 임포트
+import PasswordInput from './PasswordInput';
 
-export default function MyPageScreen({ id, password, age, height, weight, gender, isAthlete }) {
+export default function MyPageScreen({ id, password, age, height, weight, gender, isAthlete, bmr }) {
   const [localId] = useState(id);
   const [localPassword, setLocalPassword] = useState(password);
   const [localAge, setLocalAge] = useState(age);
@@ -33,48 +33,55 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
   };
 
   return (
-    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Image style={styles.profileImage} source={require('../assets/default-profile.jpg')} />
-        <Text>프로필 정보</Text>
-        <Text>ID (수정 불가)</Text>
-        <TextInput style={[styles.input, styles.nonEditable]} value={localId} editable={false} />
-        <Text>비밀번호</Text>
-        <PasswordInput
-          value={localPassword}
-          onChangeText={handlePasswordChange}
-          placeholder="Password"
-        />
-        <Text>나이</Text>
-        <TextInput style={styles.input} value={localAge} onChangeText={handleAgeChange} keyboardType="numeric" />
-        <Text>키</Text>
-        <TextInput style={styles.input} value={localHeight} onChangeText={handleHeightChange} keyboardType="numeric" />
-        <Text>체중</Text>
-        <TextInput style={styles.input} value={localWeight} onChangeText={handleWeightChange} keyboardType="numeric" />
-        <Text>성별 (수정 불가)</Text>
-        <TextInput style={[styles.input, styles.nonEditable]} value={localGender} editable={false} />
-        <Text>운동 여부</Text>
-        <RNPickerSelect
-          onValueChange={(value) => setLocalIsAthlete(value)}
-          items={[
-            { label: 'Yes', value: true },
-            { label: 'No', value: false },
-          ]}
-          style={pickerSelectStyles}
-          value={localIsAthlete}
-          placeholder={{}}
-        />
-        <Button title="저장" onPress={() => console.log('저장되었습니다.')} />
-      </View>
+    <TouchableWithoutFeedback onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Image style={styles.profileImage} source={require('../assets/default-profile.jpg')} />
+          <Text>프로필 정보</Text>
+          <Text>ID (수정 불가)</Text>
+          <TextInput style={[styles.input, styles.nonEditable]} value={localId} editable={false} />
+          <Text>비밀번호</Text>
+          <PasswordInput
+            value={localPassword}
+            onChangeText={handlePasswordChange}
+            placeholder="Password"
+          />
+          <Text>나이</Text>
+          <TextInput style={styles.input} value={localAge} onChangeText={handleAgeChange} keyboardType="numeric" />
+          <Text>키</Text>
+          <TextInput style={styles.input} value={localHeight} onChangeText={handleHeightChange} keyboardType="numeric" />
+          <Text>체중</Text>
+          <TextInput style={styles.input} value={localWeight} onChangeText={handleWeightChange} keyboardType="numeric" />
+          <Text>성별 (수정 불가)</Text>
+          <TextInput style={[styles.input, styles.nonEditable]} value={localGender} editable={false} />
+          <Text>운동 여부</Text>
+          <RNPickerSelect
+            onValueChange={(value) => setLocalIsAthlete(value)}
+            items={[
+              { label: 'Yes', value: true },
+              { label: 'No', value: false },
+            ]}
+            style={pickerSelectStyles}
+            value={localIsAthlete}
+            placeholder={{}}
+          />
+          <Text>기초대사량 (BMR)</Text>
+          <TextInput style={[styles.input, styles.nonEditable]} value={bmr ? bmr.toString() : ''} editable={false} />
+          <Button title="저장" onPress={() => console.log('저장되었습니다.')} />
+        </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  container: {
+    width: '100%',
     padding: 16,
   },
   input: {

@@ -15,21 +15,22 @@ async def signup(user: UserCreate):
     if users_collection is None:
         raise HTTPException(status_code=500, detail="Database connection is not initialized.")
     
-    user_exists = await users_collection.find_one({"id": user.id})
+    print("user.id = ", user.id)
+    user_exists = users_collection.find_one({"id": user.id})
     if user_exists:
         raise HTTPException(status_code=400, detail="ID already registered")
 
     hashed_password = get_password_hash(user.password)
-    user_dict = user.dict()
+    user_dict = user.model_dump()
     user_dict["password"] = hashed_password
 
-    new_user = await users_collection.insert_one(user_dict)
-    created_user = await users_collection.find_one({"_id": new_user.inserted_id})
+    new_user = users_collection.insert_one(user_dict)
+    created_user = users_collection.find_one({"_id": new_user.inserted_id})
 
     return User(**created_user)
 
 async def login(user: UserLogin):
-    user_in_db = await users_collection.find_one({"id": user.id})
+    user_in_db = users_collection.find_one({"id": user.id})
     if not user_in_db or not verify_password(user.password, user_in_db["password"]):
         raise HTTPException(status_code=400, detail="Incorrect ID or password")
 

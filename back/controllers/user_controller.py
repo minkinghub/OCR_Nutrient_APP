@@ -14,7 +14,7 @@ async def update_user_profile(request: Request, update: UserUpdate):
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     user_id = request.session["user_id"]
-    user_in_db = await users_collection.find_one({"_id": ObjectId(user_id)})
+    user_in_db = users_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user_in_db:
         raise HTTPException(status_code=404, detail="User not found")
@@ -26,7 +26,7 @@ async def update_user_profile(request: Request, update: UserUpdate):
     
     if update_data:
         await users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
-        updated_user = await users_collection.find_one({"_id": ObjectId(user_id)})
+        updated_user = users_collection.find_one({"_id": ObjectId(user_id)})
         return User(**updated_user)
     
     raise HTTPException(status_code=400, detail="No update data provided")

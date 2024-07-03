@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Text, View, TextInput, Button, StyleSheet, Platform, TouchableOpacity, Modal } from 'react-native';
+import { Text, View, TextInput, Button, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Picker } from '@react-native-picker/picker';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import RNPickerSelect from 'react-native-picker-select';
 import 'react-native-gesture-handler';
 
 function LoginScreen({ navigation }) {
@@ -23,7 +24,7 @@ function LoginScreen({ navigation }) {
         secureTextEntry={true}
         placeholder="Password"
       />
-      <Button title="Login" onPress={() => navigation.navigate('Main')} />
+      <Button title="Login" onPress={() => navigation.navigate('MainDrawer')} />
       <Button title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
     </View>
   );
@@ -36,9 +37,7 @@ function SignUpScreen({ navigation }) {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
-  const [isAthlete, setIsAthlete] = useState(false);
-  const [showGenderPicker, setShowGenderPicker] = useState(false);
-  const [showAthletePicker, setShowAthletePicker] = useState(false);
+  const [isAthlete, setIsAthlete] = useState(null);
 
   return (
     <View style={styles.container}>
@@ -59,48 +58,26 @@ function SignUpScreen({ navigation }) {
       <Text>체중</Text>
       <TextInput style={styles.input} value={weight} onChangeText={setWeight} placeholder="Weight" />
       <Text>Gender</Text>
-      <TouchableOpacity onPress={() => setShowGenderPicker(true)} style={styles.pickerButton}>
-        <Text style={styles.pickerButtonText}>{gender ? gender : "Select your gender"}</Text>
-      </TouchableOpacity>
-      <Modal visible={showGenderPicker} transparent={true} animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.pickerModal}>
-            <Picker
-              selectedValue={gender}
-              onValueChange={(itemValue) => {
-                setGender(itemValue);
-                setShowGenderPicker(false);
-              }}
-            >
-              <Picker.Item label="남" value="male" />
-              <Picker.Item label="여" value="female" />
-              <Picker.Item label="Other" value="other" />
-            </Picker>
-            <Button title="Done" onPress={() => setShowGenderPicker(false)} />
-          </View>
-        </View>
-      </Modal>
+      <RNPickerSelect
+        onValueChange={(value) => setGender(value)}
+        items={[
+          { label: '남', value: 'male' },
+          { label: '여', value: 'female' },
+          { label: 'Other', value: 'other' },
+        ]}
+        style={pickerSelectStyles}
+        placeholder={{ label: "Select your gender", value: null }}
+      />
       <Text>운동 여부</Text>
-      <TouchableOpacity onPress={() => setShowAthletePicker(true)} style={styles.pickerButton}>
-        <Text style={styles.pickerButtonText}>{isAthlete ? (isAthlete === true ? "Yes" : "No") : "Are you an athlete?"}</Text>
-      </TouchableOpacity>
-      <Modal visible={showAthletePicker} transparent={true} animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.pickerModal}>
-            <Picker
-              selectedValue={isAthlete}
-              onValueChange={(itemValue) => {
-                setIsAthlete(itemValue);
-                setShowAthletePicker(false);
-              }}
-            >
-              <Picker.Item label="Yes" value={true} />
-              <Picker.Item label="No" value={false} />
-            </Picker>
-            <Button title="Done" onPress={() => setShowAthletePicker(false)} />
-          </View>
-        </View>
-      </Modal>
+      <RNPickerSelect
+        onValueChange={(value) => setIsAthlete(value)}
+        items={[
+          { label: 'Yes', value: true },
+          { label: 'No', value: false },
+        ]}
+        style={pickerSelectStyles}
+        placeholder={{ label: "Are you an athlete?", value: null }}
+      />
       <Button title="Sign Up" onPress={() => navigation.navigate('Login')} />
     </View>
   );
@@ -114,11 +91,30 @@ function ImageScreen() {
   );
 }
 
-function HistoryScreen() {
+function DayScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>History Screen</Text>
+      <Text>1일 통계</Text>
     </View>
+  );
+}
+
+function WeekScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>1주 통계</Text>
+    </View>
+  );
+}
+
+const TopTab = createMaterialTopTabNavigator();
+
+function StatsScreen() {
+  return (
+    <TopTab.Navigator>
+      <TopTab.Screen name="Day" component={DayScreen} options={{ title: '1일' }} />
+      <TopTab.Screen name="Week" component={WeekScreen} options={{ title: '1주' }} />
+    </TopTab.Navigator>
   );
 }
 
@@ -132,13 +128,13 @@ function MyPageScreen() {
 
 const Tab = createBottomTabNavigator();
 
-function TabNavigator() {
+function MainTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="History"
+      initialRouteName="Stats"
       screenOptions={{ headerShown: false }}
     >
-      <Tab.Screen name="History" component={HistoryScreen} />
+      <Tab.Screen name="Stats" component={StatsScreen} />
       <Tab.Screen name="Image" component={ImageScreen} />
     </Tab.Navigator>
   );
@@ -146,10 +142,10 @@ function TabNavigator() {
 
 const Drawer = createDrawerNavigator();
 
-function MainNavigator() {
+function MainDrawer() {
   return (
-    <Drawer.Navigator initialRouteName="Main">
-      <Drawer.Screen name="Main" component={TabNavigator} options={{ drawerLabel: 'Main' }} />
+    <Drawer.Navigator initialRouteName="MainTabs">
+      <Drawer.Screen name="MainTabs" component={MainTabs} options={{ drawerLabel: 'Main Tabs' }} />
       <Drawer.Screen name="Mypage" component={MyPageScreen} />
     </Drawer.Navigator>
   );
@@ -163,7 +159,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={MainNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="MainDrawer" component={MainDrawer} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -182,27 +178,29 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
   },
-  pickerButton: {
-    height: 40,
-    borderColor: 'gray',
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
     borderWidth: 1,
-    justifyContent: 'center',
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30,
     marginBottom: 12,
-    paddingHorizontal: 8,
   },
-  pickerButtonText: {
-    color: 'gray',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  pickerModal: {
-    backgroundColor: 'white',
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
     borderRadius: 8,
-    padding: 16,
-    width: '80%',
+    color: 'black',
+    paddingRight: 30,
+    marginBottom: 12,
   },
 });

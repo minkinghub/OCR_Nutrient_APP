@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View, TextInput, Button, StyleSheet } from 'react-native';
+import { Text, View, TextInput, Button, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput'; // 공통 컴포넌트 임포트
 
@@ -29,62 +29,63 @@ function SignUpScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>ID</Text>
-      <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
-      <Text>Password</Text>
-      <PasswordInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-      />
-      <Text>나이</Text>
-      <TextInput
-        style={styles.input}
-        value={age}
-        onChangeText={handleAgeChange}
-        placeholder="(예: 25)"
-        keyboardType="numeric"
-      />
-      <Text>키</Text>
-      <TextInput
-        style={styles.input}
-        value={height}
-        onChangeText={handleHeightChange}
-        placeholder="(예: 170)"
-        keyboardType="numeric"
-      />
-      <Text>체중</Text>
-      <TextInput
-        style={styles.input}
-        value={weight}
-        onChangeText={handleWeightChange}
-        placeholder="(예: 65.5 소수점 첫자리까지)"
-        keyboardType="numeric"
-      />
-      <Text>Gender</Text>
-      <RNPickerSelect
-        onValueChange={(value) => setGender(value)}
-        items={[
-          { label: '남', value: 'male' },
-          { label: '여', value: 'female' },
-          { label: 'Other', value: 'other' },
-        ]}
-        style={pickerSelectStyles}
-        placeholder={{ label: "Select your gender", value: null }}
-      />
-      <Text>운동 여부</Text>
-      <RNPickerSelect
-        onValueChange={(value) => setIsAthlete(value)}
-        items={[
-          { label: 'Yes', value: true },
-          { label: 'No', value: false },
-        ]}
-        style={pickerSelectStyles}
-        placeholder={{ label: "Are you an athlete?", value: null }}
-      />
-      <Button title="Sign Up" onPress={() => navigation.navigate('Login')} />
-    </View>
+    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text>ID</Text>
+        <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
+        <Text>Password</Text>
+        <PasswordInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+        />
+        <Text>나이</Text>
+        <TextInput
+          style={styles.input}
+          value={age}
+          onChangeText={handleAgeChange}
+          placeholder="(예: 25)"
+          keyboardType="numeric"
+        />
+        <Text>키</Text>
+        <TextInput
+          style={styles.input}
+          value={height}
+          onChangeText={handleHeightChange}
+          placeholder="(예: 170)"
+          keyboardType="numeric"
+        />
+        <Text>체중</Text>
+        <TextInput
+          style={styles.input}
+          value={weight}
+          onChangeText={handleWeightChange}
+          placeholder="(예: 65.5 소수점 첫자리까지)"
+          keyboardType="numeric"
+        />
+        <Text>Gender</Text>
+        <RNPickerSelect
+          onValueChange={(value) => setGender(value)}
+          items={[
+            { label: '남', value: 'male' },
+            { label: '여', value: 'female' }
+          ]}
+          style={pickerSelectStyles}
+          placeholder={{ label: "Select your gender", value: null }}
+        />
+        <Text>운동 여부</Text>
+        <RNPickerSelect
+          onValueChange={(value) => setIsAthlete(value)}
+          items={[
+            { label: 'Yes', value: true },
+            { label: 'No', value: false },
+          ]}
+          style={pickerSelectStyles}
+          placeholder={{ label: "Are you an athlete?", value: null }}
+        />
+        <Button title="Sign Up" onPress={() => navigation.navigate('Login')} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

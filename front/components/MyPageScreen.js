@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Image, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput'; // 공통 컴포넌트 임포트
 
@@ -33,38 +33,40 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
   };
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.profileImage} source={require('../assets/default-profile.jpg')} />
-      <Text>프로필 정보</Text>
-      <Text>ID (수정 불가)</Text>
-      <TextInput style={[styles.input, styles.nonEditable]} value={localId} editable={false} />
-      <Text>비밀번호</Text>
-      <PasswordInput
-        value={localPassword}
-        onChangeText={handlePasswordChange}
-        placeholder="Password"
-      />
-      <Text>나이</Text>
-      <TextInput style={styles.input} value={localAge} onChangeText={handleAgeChange} keyboardType="numeric" />
-      <Text>키</Text>
-      <TextInput style={styles.input} value={localHeight} onChangeText={handleHeightChange} keyboardType="numeric" />
-      <Text>체중</Text>
-      <TextInput style={styles.input} value={localWeight} onChangeText={handleWeightChange} keyboardType="numeric" />
-      <Text>성별 (수정 불가)</Text>
-      <TextInput style={[styles.input, styles.nonEditable]} value={localGender} editable={false} />
-      <Text>운동 여부</Text>
-      <RNPickerSelect
-        onValueChange={(value) => setLocalIsAthlete(value)}
-        items={[
-          { label: 'Yes', value: true },
-          { label: 'No', value: false },
-        ]}
-        style={pickerSelectStyles}
-        value={localIsAthlete}
-        placeholder={{}}
-      />
-      <Button title="저장" onPress={() => console.log('저장되었습니다.')} />
-    </View>
+    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Image style={styles.profileImage} source={require('../assets/default-profile.jpg')} />
+        <Text>프로필 정보</Text>
+        <Text>ID (수정 불가)</Text>
+        <TextInput style={[styles.input, styles.nonEditable]} value={localId} editable={false} />
+        <Text>비밀번호</Text>
+        <PasswordInput
+          value={localPassword}
+          onChangeText={handlePasswordChange}
+          placeholder="Password"
+        />
+        <Text>나이</Text>
+        <TextInput style={styles.input} value={localAge} onChangeText={handleAgeChange} keyboardType="numeric" />
+        <Text>키</Text>
+        <TextInput style={styles.input} value={localHeight} onChangeText={handleHeightChange} keyboardType="numeric" />
+        <Text>체중</Text>
+        <TextInput style={styles.input} value={localWeight} onChangeText={handleWeightChange} keyboardType="numeric" />
+        <Text>성별 (수정 불가)</Text>
+        <TextInput style={[styles.input, styles.nonEditable]} value={localGender} editable={false} />
+        <Text>운동 여부</Text>
+        <RNPickerSelect
+          onValueChange={(value) => setLocalIsAthlete(value)}
+          items={[
+            { label: 'Yes', value: true },
+            { label: 'No', value: false },
+          ]}
+          style={pickerSelectStyles}
+          value={localIsAthlete}
+          placeholder={{}}
+        />
+        <Button title="저장" onPress={() => console.log('저장되었습니다.')} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

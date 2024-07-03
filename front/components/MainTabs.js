@@ -4,14 +4,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import StatsScreen from './StatsScreen';
 import ImageScreen from './ImageScreen';
 
+// Bottom Tab Navigator를 생성
 const Tab = createBottomTabNavigator();
 
+// MainTabs 컴포넌트는 StatsScreen과 ImageScreen을 탭 네비게이션으로 구성
 function MainTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Stats"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
+          // 각 탭의 아이콘을 설정
           let iconName;
 
           if (route.name === 'Stats') {
@@ -20,15 +23,26 @@ function MainTabs() {
             iconName = focused ? 'image' : 'image-outline';
           }
 
+          // Ionicons 컴포넌트를 사용하여 아이콘을 렌더링
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false,
+        tabBarActiveTintColor: '#007AFF',   // 활성화된 탭의 색상을 설정
+        tabBarInactiveTintColor: 'gray',    // 비활성화된 탭의 색상을 설정
+        headerShown: false, // 탭 네비게이션 상단의 헤더를 숨김
       })}
     >
-      <Tab.Screen name="Stats" component={StatsScreen} />
-      <Tab.Screen name="Image" component={ImageScreen} />
+      
+      {/* StateScreen을 Stats 탭에 설정*/}
+      <Tab.Screen
+        name="Stats"
+        component={StatsScreen}
+      />
+      
+      {/* ImageScreen을 Image 탭에 설정*/}
+      <Tab.Screen
+        name="Image"
+        component={ImageScreen}
+      />
     </Tab.Navigator>
   );
 }

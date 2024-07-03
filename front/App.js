@@ -9,9 +9,10 @@ import SignUpScreen from './components/SignUpScreen'
 import MyPageScreen from './components/MyPageScreen'
 import MainTabs from './components/MainTabs'
 
-
+// Drawer Navigator를 생성
 const Drawer = createDrawerNavigator();
 
+// MainDrawer 컴포넌트는 Drawer Navigator를 사용하여 메인 탭과 마이 페이지를 렌더링
 function MainDrawer({ route }) {
   const { id, password, age, height, weight, gender, isAthlete } = route.params;
 
@@ -20,7 +21,7 @@ function MainDrawer({ route }) {
       <Drawer.Screen
         name="MainTabs"
         component={MainTabs}
-        options={{ drawerLabel: 'Main Tabs'}}
+        options={{ drawerLabel: 'Main Tabs'}} // 드로어 메뉴에서 "Main Tabs"로 표시
       />
       <Drawer.Screen name="Mypage">
         {props => (
@@ -40,15 +41,34 @@ function MainDrawer({ route }) {
   );
 }
 
+// Stack Navigator를 생성
 const Stack = createStackNavigator();
 
+// App 컴포넌트는 네비게이션 컨테이너를 사용하여 앱의 전체 네비게이션 구조를 정의
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MainDrawer" component={MainDrawer} options={{ headerShown: false }} />
+        {/* 로그인 화면 */}
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        
+        {/* 회원가입 화면 */}
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{ headerShown: false }}
+        />
+        
+        {/* 메인 드로어 네비게이션 */}
+        <Stack.Screen
+          name="MainDrawer"
+          component={MainDrawer}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

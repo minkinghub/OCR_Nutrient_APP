@@ -1,11 +1,20 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, types, File
 from motor.motor_asyncio import AsyncIOMotorClient
 from models.user_model import User
 from routers.user_router import router as user_router
+from routers.upload_router import router as upload_router
+from middlewares.cors_middleware import cors_middleware
 from middlewares.session_middleware import create_session_middleware
+from routers import nutrient_router
+from google.cloud import vision
+from starlette.responses import JSONResponse
+import os
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'iconic-episode-428206-c2-bc5268f142db.json'
 
 app = FastAPI()
 
+cors_middleware(app)
 create_session_middleware(app)
 
 client = AsyncIOMotorClient("mongodb+srv://minjuking:GAdeWGF35XjDLId8@cluster0.qvqzpec.mongodb.net/")
@@ -29,9 +38,6 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
-from fastapi import FastAPI
-from routers import nutrient_router
-print("민주킹만만세")
 app = FastAPI()
 
 app.include_router(nutrient_router.router)
@@ -39,3 +45,5 @@ app.include_router(nutrient_router.router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Nutrient API"}
+
+app.include_router(upload_router, prefix="/api")

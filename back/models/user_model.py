@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field, StrictStr, field_validator
 from typing import Optional, Literal
+import re
 
 class User(BaseModel):
     id: StrictStr = Field(..., min_length=5, max_length=20, description="아이디: 5~20자의 영문 소문자 및 숫자만 사용 가능합니다.")
+    name: StrictStr = Field(..., min_length=2, max_length=20, description="이름: 2~20자의 한글 또는 알파벳만 사용 가능합니다.")
     password: StrictStr = Field(..., description="비밀번호: 해시된 비밀번호입니다.")
     is_athlete: Optional[bool] = Field(default=False, description="운동 여부")
     age: int = Field(..., description="나이는 0 이상이어야 합니다.")
@@ -14,6 +16,12 @@ class User(BaseModel):
     def validate_id(cls, value):
         if not value.isalnum() or not value.islower():
             raise ValueError('아이디는 영문 소문자 및 숫자만 사용 가능합니다.')
+        return value
+
+    @field_validator('name')
+    def validate_name(cls, value):
+        if not re.match(r'^[a-zA-Z가-힣]{2,20}$', value):
+            raise ValueError('이름은 2~20자의 한글 또는 알파벳만 사용 가능합니다.')
         return value
 
     @field_validator('age')
@@ -39,6 +47,7 @@ class UserInDB(User):
 
 class UserCreate(BaseModel):
     id: StrictStr = Field(..., min_length=5, max_length=20, description="아이디: 5~20자의 영문 소문자 및 숫자만 사용 가능합니다.")
+    name: StrictStr = Field(..., min_length=2, max_length=20, description="이름: 2~20자의 한글 또는 알파벳만 사용 가능합니다.")
     password: StrictStr = Field(..., min_length=8, max_length=16, description="비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해주세요.")
     is_athlete: Optional[bool] = Field(default=False, description="운동 여부")
     age: int = Field(..., description="나이는 0 이상이어야 합니다.")
@@ -50,6 +59,12 @@ class UserCreate(BaseModel):
     def validate_id(cls, value):
         if not value.isalnum() or not value.islower():
             raise ValueError('아이디는 영문 소문자 및 숫자만 사용 가능합니다.')
+        return value
+
+    @field_validator('name')
+    def validate_name(cls, value):
+        if not re.match(r'^[a-zA-Z가-힣]{2,20}$', value):
+            raise ValueError('이름은 2~20자의 한글 또는 알파벳만 사용 가능합니다.')
         return value
 
     @field_validator('password')
@@ -102,7 +117,6 @@ class UserLogin(BaseModel):
 
 class UserUpdate(BaseModel):
     password: Optional[StrictStr] = Field(None, min_length=8, max_length=16, description="비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해주세요.")
-    is_athlete: Optional[bool] = Field(default=None, description="운동 여부")
     age: Optional[int] = Field(None, description="나이는 0 이상이어야 합니다.")
     weight: Optional[float] = Field(None, description="몸무게는 0보다 커야 합니다.")
 

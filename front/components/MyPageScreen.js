@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform, Alert } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput';
@@ -43,9 +43,10 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
     setLocalWeight(numericValue);
   };
 
-  // 비밀번호 입력 변경 핸들러
+  // 비밀번호 입력 변경 핸들러 (영어와 숫자만 입력되도록 처리)
   const handlePasswordChange = (text) => {
-    setLocalPassword(text);
+    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
+    setLocalPassword(alphanumeric);
   };
 
   // 저장 버튼 클릭 핸들러

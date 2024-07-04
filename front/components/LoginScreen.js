@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import PasswordInput from './PasswordInput';
 
@@ -16,19 +16,30 @@ const LoginScreen = ({ navigation, route }) => {
     }
   };
 
+  // ID와 비밀번호 입력 시 영어와 숫자만 입력되도록 처리하는 함수
+  const handleIdChange = (text) => {
+    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
+    setId(alphanumeric);
+  };
+
+  const handlePasswordChange = (text) => {
+    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
+    setPassword(alphanumeric);
+  };
+
   return (
     <View style={styles.container}>
       <Text>ID</Text>
       <TextInput
         style={styles.input}
         value={id}
-        onChangeText={setId}
+        onChangeText={handleIdChange}
         placeholder="ID"
       />
       <Text>Password</Text>
       <PasswordInput
         value={password}
-        onChangeText={setPassword}
+        onChangeText={handlePasswordChange}
         placeholder="Password"
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>

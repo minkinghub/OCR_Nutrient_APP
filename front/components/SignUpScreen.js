@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput';
@@ -32,6 +32,17 @@ export default function SignUpScreen({ navigation }) {
     setWeight(numericValue);
   };
 
+  // ID와 비밀번호 입력 시 영어와 숫자만 입력되도록 처리하는 함수
+  const handleIdChange = (text) => {
+    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
+    setId(alphanumeric);
+  };
+
+  const handlePasswordChange = (text) => {
+    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
+    setPassword(alphanumeric);
+  };
+
   const handleSignUp = () => {
     const userData = {
       id,
@@ -50,12 +61,12 @@ export default function SignUpScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
       <View style={styles.container}>
         <Text style={styles.label}>ID</Text>
-        <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
+        <TextInput style={styles.input} value={id} onChangeText={handleIdChange} placeholder="ID" />
 
         <Text style={styles.label}>비밀번호</Text>
         <PasswordInput
           value={password}
-          onChangeText={setPassword}
+          onChangeText={handlePasswordChange}
           placeholder="Password"
         />
 

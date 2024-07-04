@@ -9,24 +9,24 @@ function LoginScreen({ navigation }) {
   const [password, setPassword] = useState(''); // 비밀번호 상태를 관리
 
   const sendRequest = async () => {
-    const data = {
-      id: id,
-      password: password
-    };
+    // const data = {
+    //   id: id,
+    //   password: password
+    // };
 
-    try {
-      const flag = await sendingLogin(data);
-      if (flag) {
+    // try {
+    //   const flag = await sendingLogin(data);
+    //   if (flag) {
         // 로그인 성공 시 메인 화면으로 이동
         navigation.navigate('MainDrawer', { id, password });
-      } else {
-        // 로그인 실패 시 경고 표시
-        Alert.alert('Login Failed', response.data.detail || 'An error occurred');
-      }
-    } catch (error) {
-      // 요청 실패 시 경고 표시
-      Alert.alert('Error', 'An error occurred during login');
-    }
+    //   } else {
+    //     // 로그인 실패 시 경고 표시
+    //     Alert.alert('Login Failed', response.data.detail || 'An error occurred');
+    //   }
+    // } catch (error) {
+    //   // 요청 실패 시 경고 표시
+    //   Alert.alert('Error', 'An error occurred during login');
+    // }
   };
   
   return (

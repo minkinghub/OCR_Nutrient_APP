@@ -70,7 +70,6 @@ async def history_controller(documentKey):
 
 # 예시 데이터 생성 함수
 def create_example_data(userId):
-    seoul_tz = pytz.timezone('Asia/Seoul')
     example_data = []
     for i in range(10):
         data = HistoryDocument(

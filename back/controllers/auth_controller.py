@@ -20,10 +20,25 @@ async def signup(user: UserCreate):
     if users_collection is None:
         raise HTTPException(status_code=500, detail="Database connection is not initialized.")
     
-    # 이미 등록된 사용자인지 확인
+    # 이미 등록된 사용자인지 확인/ bmr, tdee 계산
     user_exists = users_collection.find_one({"id": user.id})
     if user_exists:
         raise HTTPException(status_code=400, detail="ID already registered")
+
+    hashed_password = pwd_context.hash(user.password)
+    user_data = user.dict()
+    user_data['password'] = hashed_password
+
+    user_obj = User(**user_data)
+    
+    user_obj.calculate_bmr()
+    user_obj.calculate_tdee()
+    
+    user_data['bmr'] = user_obj.bmr
+    user_data['tdee'] = user_obj.tdee
+
+    users_collection.insert_one(user_data)
+    return user_obj
 
     # 비밀번호를 해시화
     hashed_password = get_password_hash(user.password)

@@ -72,10 +72,12 @@ async def login(user: UserLogin):
 async def get_current_user_id(request: Request):
     # 세션에 사용자 ID가 없는 경우 예외 발생
     if "user_id" not in request.session:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=401, detail="get_current_user_id : Not authenticated")
     
     # 세션에서 사용자 ID 반환
-    return {"user_id": request.session["user_id"]}
+    # return {"user_id": request.session["user_id"]}
+    # 세션에서 사용자 ID를 문자열로 반환
+    return str(request.session["user_id"])
 
 async def logout(request: Request):
     if "user_id" in request.session:

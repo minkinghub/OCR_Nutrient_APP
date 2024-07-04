@@ -64,9 +64,9 @@ async def update_user_profile(request: Request, update: UserUpdate):
         if weight and height and age and gender:
             bmr = calculate_bmr(weight, height, age, gender)
             tdee = calculate_tdee(bmr, activity_level)
-            update_data["bmr"] = bmr
-            update_data["tdee"] = tdee
-    
+            update_data["bmr"] = round(bmr, 1)
+            update_data["tdee"] = round(tdee, 1)
+            
     # 업데이트할 데이터가 있는 경우 데이터베이스 업데이트
     if update_data:
         users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})

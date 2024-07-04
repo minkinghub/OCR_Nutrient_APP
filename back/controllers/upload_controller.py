@@ -23,7 +23,7 @@ def upload_controller(image: ImageBase64):
     texts = response.text_annotations
 
     if response.error.message:
-        raise HTTPException(status_code=500, detail={"code": "I02", "message": "Error OCR process"})
+        raise HTTPException(status_code=400, detail={"code": "I02", "message": "Error OCR process"})
 
     # OCR 결과 추출
     if texts:

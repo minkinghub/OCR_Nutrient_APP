@@ -79,16 +79,13 @@ def extract_nutrition_info(text):
     
     return nutrition_info
 
-async def process_and_store_nutrition(nutrient_data: Nutrient, request:Request):
-    user_id = get_current_user_id(request)
+async def process_and_store_nutrition(nutrient_data: Nutrient,user_id:str):
+    nutrient_dict = nutrient_data.model_dump()
     if not user_id:
         raise HTTPException(status_code=401, detail="process_and_store_nutrition : Not authenticated")
 
-    nutrient_dict = nutrient_data.model_dump()
-
     nutrient_dict["timestamp"] = get_current_time()
     nutrient_dict["user_id"] = user_id
-    
     
     product_nutrients.insert_one(nutrient_dict)
     return {"message": "Nutrient added successfully"}

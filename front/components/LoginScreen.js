@@ -18,6 +18,7 @@ function LoginScreen({ navigation }) {
       const flag = await sendingLogin(data);
       if (flag) {
         // 로그인 성공 시 메인 화면으로 이동
+        localStorage.setItem('user_id', flag.user_id); // user_id를 로컬 스토리지에 저장
         navigation.navigate('MainDrawer', { id, password });
       } else {
         // 로그인 실패 시 경고 표시

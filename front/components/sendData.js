@@ -27,7 +27,8 @@ const sendingLogin = async (userData) => {
         });
 
         if (response.status === 200) {
-        return true
+        console.log('Login Successful', response.data);
+        return response.data
         } else {
         return false
         }

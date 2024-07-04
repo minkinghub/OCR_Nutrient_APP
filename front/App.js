@@ -13,7 +13,7 @@ const Drawer = createDrawerNavigator();
 
 // MainDrawer 컴포넌트는 Drawer Navigator를 사용하여 메인 탭과 마이 페이지를 렌더링
 function MainDrawer({ route }) {
-  const { id, password, age, height, weight, gender, isAthlete } = route.params || {};
+  const { id, password, name, age, height, weight, gender, isAthlete } = route.params || {};
 
   return (
     <Drawer.Navigator
@@ -37,6 +37,7 @@ function MainDrawer({ route }) {
             {...props}
             id={id}
             password={password}
+            name={name}
             age={age}
             height={height}
             weight={weight}

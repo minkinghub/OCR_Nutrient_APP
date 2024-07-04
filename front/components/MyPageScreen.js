@@ -4,7 +4,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput';
 
 // MyPageScreen 컴포넌트: 사용자의 프로필 정보를 표시하고 수정할 수 있는 화면
-export default function MyPageScreen({ id, password, age, height, weight, gender, isAthlete, bmr }) {
+export default function MyPageScreen({ id, password, age, height, weight, gender, isAthlete, bmr, name }) {
   // 상태 관리
   const [localId, setLocalId] = useState(id);
   const [localPassword, setLocalPassword] = useState(password);
@@ -13,6 +13,7 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
   const [localWeight, setLocalWeight] = useState(weight);
   const [localGender, setLocalGender] = useState(gender);
   const [localIsAthlete, setLocalIsAthlete] = useState(isAthlete);
+  const [localName, setLocalName] = useState(name);
 
   useEffect(() => {
     setLocalId(id);
@@ -22,7 +23,8 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
     setLocalWeight(weight);
     setLocalGender(gender);
     setLocalIsAthlete(isAthlete);
-  }, [id, password, age, height, weight, gender, isAthlete]);
+    setLocalName(name);
+  }, [id, password, age, height, weight, gender, isAthlete, name]);
 
   // 나이 입력 변경 핸들러
   const handleAgeChange = (text) => {
@@ -79,6 +81,10 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
             onChangeText={handlePasswordChange}
             placeholder="Password"
           />
+
+          {/* 이름 입력 필드 (수정 불가) */}
+          <Text>이름 (수정 불가)</Text>
+          <TextInput style={[styles.input, styles.nonEditable]} value={localName} editable={false} />
 
           {/* 나이 입력 필드 */}
           <Text>나이</Text>

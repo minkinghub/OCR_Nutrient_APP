@@ -32,6 +32,19 @@ export default function SignUpScreen({ navigation }) {
     setWeight(numericValue);
   };
 
+  const handleSignUp = () => {
+    const userData = {
+      id,
+      password,
+      age,
+      height,
+      weight,
+      gender,
+      isAthlete
+    };
+    navigation.navigate('Login', { userData });
+  };
+
   return (
     // 화면을 클릭 시 키보드를 닫도록 설정
     <TouchableWithoutFeedback onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
@@ -79,7 +92,6 @@ export default function SignUpScreen({ navigation }) {
           items={[
             { label: '남', value: 'male' },
             { label: '여', value: 'female' },
-            { label: 'Other', value: 'other' },
           ]}
           style={pickerSelectStyles}
           placeholder={{ label: "Select your gender", value: null }}
@@ -96,7 +108,7 @@ export default function SignUpScreen({ navigation }) {
           placeholder={{ label: "Are you an athlete?", value: null }}
         />
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
         

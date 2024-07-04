@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform, Alert } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput';
@@ -6,13 +6,23 @@ import PasswordInput from './PasswordInput';
 // MyPageScreen 컴포넌트: 사용자의 프로필 정보를 표시하고 수정할 수 있는 화면
 export default function MyPageScreen({ id, password, age, height, weight, gender, isAthlete, bmr }) {
   // 상태 관리
-  const [localId] = useState(id);
+  const [localId, setLocalId] = useState(id);
   const [localPassword, setLocalPassword] = useState(password);
   const [localAge, setLocalAge] = useState(age);
   const [localHeight, setLocalHeight] = useState(height);
   const [localWeight, setLocalWeight] = useState(weight);
-  const [localGender] = useState(gender);
+  const [localGender, setLocalGender] = useState(gender);
   const [localIsAthlete, setLocalIsAthlete] = useState(isAthlete);
+
+  useEffect(() => {
+    setLocalId(id);
+    setLocalPassword(password);
+    setLocalAge(age);
+    setLocalHeight(height);
+    setLocalWeight(weight);
+    setLocalGender(gender);
+    setLocalIsAthlete(isAthlete);
+  }, [id, password, age, height, weight, gender, isAthlete]);
 
   // 나이 입력 변경 핸들러
   const handleAgeChange = (text) => {

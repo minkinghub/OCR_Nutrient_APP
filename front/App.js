@@ -14,7 +14,7 @@ const Drawer = createDrawerNavigator();
 
 // MainDrawer 컴포넌트는 Drawer Navigator를 사용하여 메인 탭과 마이 페이지를 렌더링
 function MainDrawer({ route }) {
-  const { id, password, age, height, weight, gender, isAthlete } = route.params;
+  const { id, password, age, height, weight, gender, isAthlete } = route.params || {};
 
   return (
     <Drawer.Navigator
@@ -32,7 +32,7 @@ function MainDrawer({ route }) {
         component={MainTabs}
         options={{ drawerLabel: 'Main Tabs' }} // 드로어 메뉴에서 "Main Tabs"로 표시
       />
-      <Drawer.Screen name="Mypage">
+      <Drawer.Screen name="MyPage">
         {props => (
           <MyPageScreen
             {...props}

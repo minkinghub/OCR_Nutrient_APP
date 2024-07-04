@@ -8,6 +8,7 @@ router = APIRouter()
 async def signup_route(user: UserCreate):
     return await signup(user)
 
+
 @router.post("/login", response_model=dict)
 async def login_route(user: UserLogin, request: Request):
     user_in_db = await login(user)

@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 
 class HistoryDocument(BaseModel):
-    userId: str
-    uploadTime: str
-    chalories: float = 0.0
+    calorie: float = 0.0
     charbodrate: float = 0.0
     protein: float = 0.0
     fat: float = 0.0

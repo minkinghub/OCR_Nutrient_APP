@@ -6,6 +6,7 @@ import * as Progress from 'react-native-progress';
 
 const barSize = screenWidth * 0.9 * 0.1
 const blankSize = screenWidth * 0.9 * 0.035
+const labelSize = screenWidth * 0.9 * 0.095
 
 const GraphPage = () => {
     const pieData = [
@@ -20,42 +21,42 @@ const GraphPage = () => {
         {
             value: 40,
             label: '나트륨',
-            labelWidth: screenWidth * 0.1,
+            labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
             frontColor: '#6600FF',
         },
         {
             value: 50,
             label: '포화지방',
-            labelWidth: screenWidth * 0.1,
+            labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
             frontColor: '#6600FF',
         },
         {
             value: 75,
             label: '트랜스지방',
-            labelWidth: screenWidth * 0.1,
+            labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
             frontColor: '#6600FF',
         },
         {
             value: 30,
             label: "당류",
-            labelWidth: screenWidth * 0.1,
+            labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
             frontColor: '#6600FF',
         },
         {
             value: 60,
             label: '칼슘',
-            labelWidth: screenWidth * 0.1,
+            labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
             frontColor: '#6600FF',
         },
         {
             value: 65,
             label: '콜레스테롤',
-            labelWidth: screenWidth * 0.1,
+            labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
             frontColor: '#6600FF',
         },

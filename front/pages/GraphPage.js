@@ -4,6 +4,9 @@ import { BarChart, PieChart } from 'react-native-gifted-charts';
 import { screenWidth } from 'react-native-gifted-charts/src/utils';
 import * as Progress from 'react-native-progress';
 
+const barSize = screenWidth * 0.9 * 0.1
+const blankSize = screenWidth * 0.9 * 0.035
+
 const GraphPage = () => {
     const pieData = [
         {
@@ -141,8 +144,8 @@ const GraphPage = () => {
                 <View style={styles.chartContainer}>
                     <BarChart
                         data={barData}
-                        barWidth={screenWidth * 0.09}
-                        spacing={screenWidth * 0.04}
+                        barWidth={barSize}
+                        spacing={blankSize}
                         roundedTop
                         xAxisThickness={2}
                         yAxisThickness={0}

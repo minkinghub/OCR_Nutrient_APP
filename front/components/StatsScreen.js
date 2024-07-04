@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { GraphPage } from "../pages/GraphPage"
 
 // DayScreen 컴포넌트: 1일 통계를 표시
 function DayScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>1일 통계</Text>
+      <GraphPage />
     </View>
   );
 }

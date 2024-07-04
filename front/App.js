@@ -2,9 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Picker } from '@react-native-picker/picker';
-import { GraphPage, CameraPage } from "./pages";
 import "react-native-svg";
 import 'react-native-gesture-handler';
 

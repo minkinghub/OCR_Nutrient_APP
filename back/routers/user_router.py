@@ -8,11 +8,12 @@ router = APIRouter()
 async def signup_route(user: UserCreate):
     return await signup(user)
 
+
 @router.post("/login", response_model=dict)
 async def login_route(user: UserLogin, request: Request):
     user_in_db = await login(user)
     request.session["user_id"] = str(user_in_db["_id"])
-    return {"message": "Login successful", "user_id": user.id}
+    return {"message": "Login successful", "user_id":str(request.session["user_id"])}
 
 @router.get("/current_user_id", response_model=dict)
 async def get_current_user_id(request: Request):

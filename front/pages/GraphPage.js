@@ -1,84 +1,211 @@
-import React from 'react';
-import { StyleSheet, Dimensions } from 'react-native';
-import { View } from "react-native-ui-lib";
-import { ProgressChart, BarChart } from 'react-native-chart-kit';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import { screenWidth } from 'react-native-gifted-charts/src/utils';
+import * as Progress from 'react-native-progress';
+import { DonutGraph, BarGraph, LoadingComponent, loadNutrient } from '../components';
 
-const screenWidth = Dimensions.get("window").width;
+const userId = "66861ec2d90427eb49eda019";
 
-const progressData = {
-    labels: ["칼로리", "탄수화물", "단백질", "지방"], // 선택
-    data: [0.2, 0.4, 0.6, 0.8]
-};
-
-const progressChartConfig = {
-    backgroundGradientFrom: "#FFFFFF", // 배경 시작 색
-    backgroundGradientTo: "#FFFFFF", // 배경 끝 색
-    color: (opacity = 1) => `rgba(102, 00, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 글자 색깔 변경
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
-};
-
-const barChartConfig = {
-    backgroundGradientFrom: "#FFFFFF", // 배경 시작 색
-    backgroundGradientTo: "#FFFFFF", // 배경 끝 색
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 글자 색깔 변경
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
-};
-
-const barData = {
-    labels: ["나트륨", "비타민 C", "비타민 D", "비타민 B", "비타민 E", "철분"],
-    datasets: [
-        {
-            data: [20, 45, 28, 80, 99, 43]
-        }
-    ]
-};
+const labelSize = screenWidth * 0.9 * 0.095;
 
 const GraphPage = () => {
+    const [nutrient, setNutrient] = useState({});  // 서버에서 받아온 영양소 정보
+    const [tdee, setTdee] = useState(1);  // 서버에서 받아온 tdee
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const setInfos = async () => {
+            const data = await loadNutrient({ documentKey: userId });
+            console.log("data : ", data);
+            if (Object.keys(data).length === 0) {
+                Alert.alert("오류 발생");
+                return;
+            }
+            setNutrient(data.nutrient);
+            setTdee(data.tdee);
+            setIsLoading(false);
+        };
+
+        setInfos();
+    }, []);
+
+    useEffect(() => {
+        console.log(tdee);
+    }, [tdee]);
+
+    useEffect(() => {
+        console.log(nutrient);
+    }, [nutrient]);
+
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+
+    const pieData = [
+        {
+            value: 30,
+            color: '#3366FF',
+        },
+        { value: 100, color: '#DDDDDD' },
+    ];
+
+    const barData = [
+        {
+            value: 30,
+            label: '나트륨',
+            labelWidth: labelSize,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#30A2FF',
+        },
+        {
+            value: 30,
+            label: '포화지방',
+            labelWidth: labelSize,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#ADC8FF',
+        },
+        {
+            value: 30,
+            label: '트랜스지방',
+            labelWidth: labelSize,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#84A9FF',
+        },
+        {
+            value: 30,
+            label: "당류",
+            labelWidth: labelSize,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#6690FF',
+        },
+        {
+            value: 30,
+            label: '칼슘',
+            labelWidth: labelSize,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#3366FF',
+        },
+        {
+            value: 40,
+            label: '콜레스테롤',
+            labelWidth: labelSize,
+            labelTextStyle: { color: 'gray' },
+            frontColor: '#254EDB',
+        },
+    ];
+
     return (
-        <View style={styles.container}>
-            <ProgressChart
-                data={progressData}
-                width={screenWidth * 0.95} // Adjust width to avoid padding issues
-                height={220}
-                strokeWidth={16}
-                radius={40}
-                chartConfig={progressChartConfig}
-                hideLegend={false}
-            />
-            <View style={styles.line} />
-            <BarChart
-                data={barData}
-                width={screenWidth * 0.95}
-                height={220}
-                fromZero={true}
-                showBarTops={false}
-                yAxisSuffix="%"
-                chartConfig={barChartConfig}
-                verticalLabelRotation={0}
-            />
-        </View>
+        <>
+            <View style={[styles.boxContainer]}>
+                <Text style={styles.sectionLabel}>일일 칼로리 섭취량</Text>
+                <View style={styles.chartContainer}>
+                    <Progress.Bar
+                        progress={0 || ( nutrient.calories / tdee) }
+                        width={screenWidth * 0.8}
+                        color={'#FF6347'}
+                        style={styles.progressBar}
+                    />
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.progressLabel}>50 %</Text>
+                    <Text style={styles.progressLabel}> 1500 / 3000 Kcal</Text>
+                </View>
+            </View>
+            <View style={styles.boxContainer}>
+                <Text style={styles.sectionLabel}>일일 주요 영양소 섭취량</Text>
+                <View style={styles.chartContainer}>
+                    <DonutGraph data={pieData} label="탄수화물" />
+                    <View style={styles.separatorVertical} />
+                    <DonutGraph data={pieData} label="단백질" />
+                    <View style={styles.separatorVertical} />
+                    <DonutGraph data={pieData} label="지방" />
+                </View>
+            </View>
+            <View style={styles.boxContainer}>
+                <Text style={styles.sectionLabel}>일일 기타 영양소 섭취량</Text>
+                <BarGraph data={barData} />
+            </View>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
+    progressContainer: {
         alignItems: 'center',
-        backgroundColor: '#ffffff',
-        padding: 8, // Adjust padding as necessary
+        marginVertical: 20,
     },
-    line: {
+    progressLabel: {
+        fontSize: 16,
+        marginTop: 10,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    sectionLabel: {
+        fontSize: 18,
+        marginVertical: 15,
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'center',
+    },
+    infoBox: {
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        padding: 10,
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
         width: '100%',
-        height: 1,
-        backgroundColor: '#000', // 선 색깔
-        marginVertical: 20, // 위아래 여백
+    },
+    boxContainer: {
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        padding: 10,
+        alignItems: 'center',
+        marginBottom: 5,
+        marginHorizontal: 5,
+        width: '98%',
+        backgroundColor: '#f8f8f8',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+    },
+    chartContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        width: '98%',
+        padding: 10,
+        backgroundColor: '#f8f8f8',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+    },
+    separatorVertical: {
+        width: 1,
+        height: '100%',
+        backgroundColor: '#ccc',
+        marginHorizontal: 10,
+    },
+    barChartContainer: {
+        margin: 20,
+        padding: 20,
+        backgroundColor: '#f8f8f8',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+    },
+    progressBar: {
+        borderRadius: 5,
     },
 });
 

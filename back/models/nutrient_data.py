@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 
 class Nutrient(BaseModel):
-    product_id: str  # 제품 ID
-    product_name: str  # 제품 이름
-    calories: float = 0.0  # 칼로리
+    calorie: float = 0.0  # 칼로리
     carbohydrate: float = 0.0  # 탄수화물
     protein: float = 0.0  # 단백질
     fat: float = 0.0  # 지방

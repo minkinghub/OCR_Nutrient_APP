@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import PasswordInput from './PasswordInput';
 
@@ -36,17 +36,17 @@ export default function SignUpScreen({ navigation }) {
     // 화면을 클릭 시 키보드를 닫도록 설정
     <TouchableWithoutFeedback onPress={Platform.OS !== 'web' ? Keyboard.dismiss : undefined}>
       <View style={styles.container}>
-        <Text>ID</Text>
+        <Text style={styles.label}>ID</Text>
         <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
 
-        <Text>비밀번호</Text>
+        <Text style={styles.label}>비밀번호</Text>
         <PasswordInput
           value={password}
           onChangeText={setPassword}
           placeholder="Password"
         />
 
-        <Text>나이</Text>
+        <Text style={styles.label}>나이</Text>
         <TextInput
           style={styles.input}
           value={age}
@@ -55,7 +55,7 @@ export default function SignUpScreen({ navigation }) {
           keyboardType="numeric"
         />
 
-        <Text>키</Text>
+        <Text style={styles.label}>키</Text>
         <TextInput
           style={styles.input}
           value={height}
@@ -64,7 +64,7 @@ export default function SignUpScreen({ navigation }) {
           keyboardType="numeric"
         />
 
-        <Text>체중</Text>
+        <Text style={styles.label}>체중</Text>
         <TextInput
           style={styles.input}
           value={weight}
@@ -73,7 +73,7 @@ export default function SignUpScreen({ navigation }) {
           keyboardType="numeric"
         />
 
-        <Text>성별</Text>
+        <Text style={styles.label}>성별</Text>
         <RNPickerSelect
           onValueChange={(value) => setGender(value)}
           items={[
@@ -85,7 +85,7 @@ export default function SignUpScreen({ navigation }) {
           placeholder={{ label: "Select your gender", value: null }}
         />
 
-        <Text>운동 여부</Text>
+        <Text style={styles.label}>운동 여부</Text>
         <RNPickerSelect
           onValueChange={(value) => setIsAthlete(value)}
           items={[
@@ -96,7 +96,9 @@ export default function SignUpScreen({ navigation }) {
           placeholder={{ label: "Are you an athlete?", value: null }}
         />
 
-        <Button title="Sign Up" onPress={() => navigation.navigate('Login')} />
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
         
       </View>
     </TouchableWithoutFeedback>
@@ -109,13 +111,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 16,
     paddingHorizontal: 8,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
@@ -126,10 +149,11 @@ const pickerSelectStyles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 4,
+    borderRadius: 8,
     color: 'black',
     paddingRight: 30,
     marginBottom: 12,
+    backgroundColor: '#fff',
   },
   inputAndroid: {
     fontSize: 16,
@@ -141,5 +165,6 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: 30,
     marginBottom: 12,
+    backgroundColor: '#fff',
   },
 });

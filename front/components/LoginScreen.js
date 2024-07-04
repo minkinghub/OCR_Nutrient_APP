@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Text, View, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import PasswordInput from './PasswordInput';
 
 // LoginScreen 컴포넌트: 사용자가 ID와 비밀번호를 입력하고 로그인 또는 회원가입을 할 수 있는 화면
@@ -9,10 +9,10 @@ function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>ID</Text>
+      <Text style={styles.label}>ID</Text>
       {/* ID 입력 필드 */}
       <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
-      <Text>Password</Text>
+      <Text style={styles.label}>Password</Text>
 
       {/* 비밀번호 입력 필드 (PasswordInput 컴포넌트 사용) */}
       <PasswordInput
@@ -22,13 +22,14 @@ function LoginScreen({ navigation }) {
       />
 
       {/* 로그인 버튼 */}
-      <Button title="Login" onPress={() => navigation.navigate('MainDrawer', {
-        id,
-        password,
-      })} />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MainDrawer', { id, password })}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
 
       {/* 회원가입 버튼 */}
-      <Button title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp')}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -39,13 +40,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 16,
     paddingHorizontal: 8,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

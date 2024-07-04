@@ -1,13 +1,13 @@
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import 'react-native-gesture-handler';
 
-
-import LoginScreen from './components/LoginScreen'
-import SignUpScreen from './components/SignUpScreen'
-import MyPageScreen from './components/MyPageScreen'
-import MainTabs from './components/MainTabs'
+import LoginScreen from './components/LoginScreen';
+import SignUpScreen from './components/SignUpScreen';
+import MyPageScreen from './components/MyPageScreen';
+import MainTabs from './components/MainTabs';
 
 // Drawer Navigator를 생성
 const Drawer = createDrawerNavigator();
@@ -17,11 +17,20 @@ function MainDrawer({ route }) {
   const { id, password, age, height, weight, gender, isAthlete } = route.params;
 
   return (
-    <Drawer.Navigator initialRouteName="MainTabs">
+    <Drawer.Navigator
+      initialRouteName="MainTabs"
+      screenOptions={{
+        drawerActiveTintColor: '#4CAF50',
+        drawerInactiveTintColor: 'gray',
+        drawerStyle: {
+          backgroundColor: '#f5f5f5',
+        },
+      }}
+    >
       <Drawer.Screen
         name="MainTabs"
         component={MainTabs}
-        options={{ drawerLabel: 'Main Tabs'}} // 드로어 메뉴에서 "Main Tabs"로 표시
+        options={{ drawerLabel: 'Main Tabs' }} // 드로어 메뉴에서 "Main Tabs"로 표시
       />
       <Drawer.Screen name="Mypage">
         {props => (

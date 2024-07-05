@@ -18,8 +18,6 @@ export default function PasswordInput({ value, onChangeText, placeholder }) {
 
       {/* 아이콘을 눌러 비밀번호 표시/숨김 토글 */}
       <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-
-
         <Ionicons
           name={showPassword ? 'eye' : 'eye-off'} // 비밀번호 표시 여부에 따라 아이콘 변경
           size={24}

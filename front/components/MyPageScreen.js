@@ -70,7 +70,7 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
           <Image style={styles.profileImage} source={require('../assets/default-profile.png')} />
           <Text style={styles.headerText}>프로필 정보</Text>
 
-          {/* ID 필드 (수정 불가) */}
+          {/* ID 입력 필드 (수정 불가) */}
           <Text>ID (수정 불가)</Text>
           <TextInput style={[styles.input, styles.nonEditable]} value={localId} editable={false} />
 
@@ -82,7 +82,7 @@ export default function MyPageScreen({ id, password, age, height, weight, gender
             placeholder="Password"
           />
 
-          {/* 이름 필드 (수정 불가) */}
+          {/* 이름 입력 필드 (수정 불가) */}
           <Text>이름 (수정 불가)</Text>
           <TextInput style={[styles.input, styles.nonEditable]} value={localName} editable={false} />
 

@@ -25,8 +25,10 @@ const CameraPage = () => {
   const uploadImage = async () => {
     if (!base64Image) return;
 
+    const user_id = localStorage.getItem('user_id'); // 로컬 스토리지에서 user_id 가져오기
+
     try {
-      const response = await axios.post('http://127.0.0.1:8000/upload', { base64: base64Image });
+      const response = await axios.post('http://127.0.0.1:8000/upload', { base64: base64Image, user_id: user_id });
       console.log(response.data);
     } catch (error) {
       console.error(error.response ? error.response.data : error.message);

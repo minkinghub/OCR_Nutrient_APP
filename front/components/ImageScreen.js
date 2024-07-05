@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { CameraPage } from "../pages/CameraPage";
 
 // ImageScreen 컴포넌트는 "Image Screen" 텍스트를 중앙에 표시

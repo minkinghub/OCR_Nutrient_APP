@@ -1,72 +1,83 @@
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { sendingLogin } from "./";
 import PasswordInput from './PasswordInput';
 
-const LoginScreen = ({ navigation, route }) => {
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
+// LoginScreen 컴포넌트: 사용자가 ID와 비밀번호를 입력하고 로그인 또는 회원가입을 할 수 있는 화면
+function LoginScreen({ navigation }) {
+  const [id, setId] = useState(''); // ID 상태를 관리
+  const [password, setPassword] = useState(''); // 비밀번호 상태를 관리
 
-  const userData = route.params?.userData || {};
+  const sendRequest = async () => {
+    const data = {
+      id: id,
+      password: password
+    };
 
-  const handleLogin = () => {
-    if (id === userData.id && password === userData.password) {
-      navigation.navigate('MainDrawer', userData);
-    } else {
-      Alert.alert('로그인 실패', 'ID 또는 비밀번호가 올바르지 않습니다.');
+    try {
+      const flag = await sendingLogin(data);
+      if (flag) {
+        // 로그인 성공 시 메인 화면으로 이동
+        localStorage.setItem('user_id', flag.user_id); // user_id를 로컬 스토리지에 저장
+        navigation.navigate('MainDrawer', { id, password });
+      } else {
+        // 로그인 실패 시 경고 표시
+        Alert.alert('Login Failed', response.data.detail || 'An error occurred');
+      }
+    } catch (error) {
+      // 요청 실패 시 경고 표시
+      Alert.alert('Error', 'An error occurred during login');
     }
   };
-
-  // ID와 비밀번호 입력 시 영어와 숫자만 입력되도록 처리하는 함수
-  const handleIdChange = (text) => {
-    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
-    setId(alphanumeric);
-  };
-
-  const handlePasswordChange = (text) => {
-    const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
-    setPassword(alphanumeric);
-  };
-
+  
   return (
     <View style={styles.container}>
-      <Text>ID</Text>
-      <TextInput
-        style={styles.input}
-        value={id}
-        onChangeText={handleIdChange}
-        placeholder="ID"
-      />
-      <Text>Password</Text>
+      <Text style={styles.label}>ID</Text>
+      {/* ID 입력 필드 */}
+      <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
+      <Text style={styles.label}>Password</Text>
+
+      {/* 비밀번호 입력 필드 (PasswordInput 컴포넌트 사용) */}
       <PasswordInput
         value={password}
-        onChangeText={handlePasswordChange}
+        onChangeText={setPassword}
         placeholder="Password"
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+
+      {/* 로그인 버튼 */}
+      <TouchableOpacity style={styles.button} onPress={sendRequest}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('SignUp')}
-      >
+
+      {/* 회원가입 버튼 */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
+// 스타일을 정의하는 StyleSheet 객체
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 16,
     paddingHorizontal: 8,
+    borderRadius: 8,
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#4CAF50',
@@ -74,11 +85,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
     marginVertical: 8,
-    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
+    textAlign: 'center',
     fontWeight: 'bold',
   },
 });

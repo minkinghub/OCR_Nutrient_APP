@@ -104,7 +104,12 @@ export default function SignUpScreen({ navigation }) {
           />
 
           <Text style={styles.label}>이름</Text>
-          <TextInput style={styles.shortInput} value={name} onChangeText={setName} placeholder="이름" />
+          <TextInput
+            style={styles.shortInput}
+            value={name}
+            onChangeText={setName}
+            placeholder="이름"
+          />
 
           <Text style={styles.label}>나이</Text>
           <TextInput
@@ -129,7 +134,7 @@ export default function SignUpScreen({ navigation }) {
             style={styles.shortInput}
             value={weight}
             onChangeText={handleWeightChange}
-            placeholder="(예: 65.5)"
+            placeholder="(예: 65.5 소수점 첫자리까지)"
             keyboardType="numeric"
           />
 

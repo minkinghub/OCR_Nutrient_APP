@@ -1,8 +1,6 @@
 import base64
-from PIL import Image
-from io import BytesIO
+import requests
 from fastapi import HTTPException
-from google.cloud import vision
 from models.upload_model import ImageBase64
 import openai
 
@@ -27,15 +25,25 @@ def classify_image(image_data):
         return "unknown"
 
 def process_nutritional_label(image_data):
-    client = vision.ImageAnnotatorClient()
-    image = vision.Image(content=image_data)
-    response = client.text_detection(image=image)
-    texts = response.text_annotations
+    api_key = "YOUR_UPSTAGE_API_KEY"
+    url = "https://api.upstage.ai/v1/document-ai/ocr"
+    headers = {"Authorization": f"Bearer {api_key}"}
+    
+    try:
+        files = {"document": ("image.jpg", image_data, "application/octet-stream")}
+        response = requests.post(url, headers=headers, files=files)
+    except Exception as e:
+        print(f"이미지 읽기 또는 요청 전송 오류: {e}")
+        raise HTTPException(status_code=400, detail={"code": "Io2", "message": "이미지 읽기 또는 요청 전송 오류"})
 
-    if response.error.message:
-        raise HTTPException(status_code=400, detail={"code": "I02", "message": "Error OCR process"})
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail={"code": "I02", "message": "Error OCR process"})
+    
+    response_data = response.json()
 
-    ocr_result = texts[0].description if texts else ""
+    # OCR 결과 추출
+    ocr_result = response_data.get("text", "")
+
     return {"message": "Processed nutritional label", "ocr_result": ocr_result}
 
 def analyze_food_image(image_data):
@@ -44,13 +52,13 @@ def analyze_food_image(image_data):
 
 def upload_controller(image: ImageBase64):
     try:
+        # base64 문자열을 디코딩
         image_data = base64.b64decode(image.base64)
         if not image_data:
-            raise ValueError("Decoded image data is empty.")
-        pil_image = Image.open(BytesIO(image_data))
+            raise ValueError("Decoded 이미지 데이터가 비어 있습니다.")
     except Exception as e:
-        print(f"Error decoding image: {e}")  
-        raise HTTPException(status_code=400, detail={"code": "Io2", "message": "Error decoding image"})
+        print(f"이미지 디코딩 오류: {e}")
+        raise HTTPException(status_code=400, detail={"code": "Io2", "message": "이미지 디코딩 오류"})
 
     classification = classify_image(image_data)
 

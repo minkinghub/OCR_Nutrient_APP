@@ -33,13 +33,9 @@ async def history_controller(documentKey):
     }
     
     documents = list(product_nutrients.find(query))
-
-    if not documents:
-        raise HTTPException(status_code=400, detail={"code": "H01", "message": "No documents found"})
-
     # 초기 합계 값 설정
     total_nutrients = {
-        "chalories": 0,
+        "calorie": 0,
         "charbodrate": 0,
         "protein": 0,
         "fat": 0,
@@ -53,9 +49,12 @@ async def history_controller(documentKey):
     
     tdee = get_user_tdee(documentKey)
     
+    if not documents:
+        return {"total_nutrients": total_nutrients, "tdee": tdee}
+    
     # 각 문서의 값을 합산
     for doc in documents:
-        total_nutrients["chalories"] += doc.get("chalories", 0)
+        total_nutrients["calorie"] += doc.get("calorie", 0)
         total_nutrients["charbodrate"] += doc.get("charbodrate", 0)
         total_nutrients["protein"] += doc.get("protein", 0)
         total_nutrients["fat"] += doc.get("fat", 0)
@@ -66,7 +65,7 @@ async def history_controller(documentKey):
         total_nutrients["cholesterol"] += doc.get("cholesterol", 0)
         total_nutrients["sugar"] += doc.get("sugar", 0)
 
-    return JSONResponse(content={"total_nutrients": total_nutrients, "tdee": tdee})
+    return {"total_nutrients": total_nutrients, "tdee": tdee}
 
 # 예시 데이터 생성 함수
 def create_example_data(userId):
@@ -75,7 +74,7 @@ def create_example_data(userId):
         data = HistoryDocument(
             userId=userId,
             uploadTime=get_today_datetime(),
-            chalories=float(i),
+            calorie=float(i),
             charbodrate=float(i),
             protein=float(i),
             fat=float(i),

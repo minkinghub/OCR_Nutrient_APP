@@ -22,8 +22,9 @@ const GraphPage = () => {
                 return;
             }
             setNutrient(data.nutrient);
-            setTdee(data.tdee);
+            setTdee(Math.floor(data.tdee));
             setIsLoading(false);
+            console.log(nutrient.calorie/tdee)
         };
 
         setInfos();
@@ -100,18 +101,18 @@ const GraphPage = () => {
                 <Text style={styles.sectionLabel}>일일 칼로리 섭취량</Text>
                 <View style={styles.chartContainer}>
                     <Progress.Bar
-                        progress={0 || ( nutrient.calories / tdee) }
+                        progress={0 || ( nutrient.calorie / tdee)}
                         width={screenWidth * 0.8}
                         color={'#FF6347'}
                         style={styles.progressBar}
                     />
                 </View>
                 <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.progressLabel}>50 %</Text>
-                    <Text style={styles.progressLabel}> 1500 / 3000 Kcal</Text>
+                    <Text style={styles.progressLabel}>{nutrient.calorie && tdee ? Math.floor((nutrient.calorie / tdee) * 100) : 0} %</Text>
+                    <Text style={styles.progressLabel}> {0 || nutrient.calorie} / {tdee} Kcal</Text>
                 </View>
             </View>
-            <View style={styles.boxContainer}>
+            <View style={styles.boxContainer}>      
                 <Text style={styles.sectionLabel}>일일 주요 영양소 섭취량</Text>
                 <View style={styles.chartContainer}>
                     <DonutGraph data={pieData} label="탄수화물" />

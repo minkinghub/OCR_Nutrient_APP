@@ -2,56 +2,12 @@ from db import product_nutrients, nutrient_data
 from fastapi import HTTPException, Request
 from models.nutrient_data import Nutrient
 from datetime import datetime, date
-import pytz
 from datetime import datetime
-from controllers.auth_controller import get_current_user_id
-import pytz
+from controllers.history_controller import get_today_datetime
 import re
-import json
-import difflib
 
-# 서울 시간대를 설정
-seoul_tz = pytz.timezone('Asia/Seoul')
 
-# 현재 시간을 서울 시간대로 반환하는 함수
-def get_current_time():
-    return datetime.now(seoul_tz)
 
-# # 영양소 정보를 데이터베이스에 추가하는 비동기 함수
-# async def add_nutrient_to_db(nutrient: Nutrient, request: Request):
-#     # 세션에서 user_id를 가져옴
-#     user_id = request.session.get("user_id")
-#     # user_id가 없으면 인증되지 않았다는 예외를 발생
-#     if not user_id:
-#         raise HTTPException(status_code=401, detail="Not authenticated")
-#     print("user_id = ", user_id)
-    
-#     # Nutrient 모델의 데이터를 딕셔너리로 변환
-#     nutrient_dict = nutrient.dict()
-#     # 현재 시간과 user_id를 nutrient_dict에 추가
-#     nutrient_dict["timestamp"] = get_current_time()
-#     nutrient_dict["user_id"] = user_id
-    
-#     # nutrient_dict의 키를 반복하여 특정 필드를 제외한 나머지 필드를 확인
-#     for key in nutrient_dict.keys():
-#         # 특정 필드를 제외
-#         if key not in ["product_id", "product_name", "serving_size", "timestamp", "user_id"]:
-#             # 영양소 값이 None이 아닌지 확인
-#             if nutrient_dict[key] is not None:
-#                 # nutrient_data 컬렉션에서 해당 영양소 이름을 찾음
-#                 nutrient_name = nutrient_data.find_one({"name": key})
-#                 # 영양소 이름이 존재하면 nutrient_dict를 product_nutrients 컬렉션에 삽입
-#                 if nutrient_name is not None:
-#                     result = product_nutrients.insert_one(nutrient_dict)
-#                     # ObjectId를 문자열로 변환하여 JSON 직렬화 문제 해결
-#                     nutrient_dict["_id"] = str(result.inserted_id)
-#                     return {"message": "Nutrient added successfully", "nutrient_dict": nutrient_dict}
-#                 # 영양소 값이 None인 경우 메시지 반환
-#                 return {"message": "nutrient_dict[key] is None", "nutrient": nutrient_dict[key]}
-#             # 필수 정보가 누락된 경우 메시지 반환
-#             return {"message": "Required information missing"}
-#     # 영양소 추가 실패 메시지 반환
-#     return {"message": "Nutrient added failure"}
 
 def extract_nutrition_info(text):
     mapping = {
@@ -79,16 +35,13 @@ def extract_nutrition_info(text):
     
     return nutrition_info
 
-async def process_and_store_nutrition(nutrient_data: Nutrient, request:Request):
-    user_id = get_current_user_id(request)
+async def process_and_store_nutrition(nutrient_data: Nutrient,user_id:str):
+    nutrient_dict = nutrient_data.model_dump()
     if not user_id:
         raise HTTPException(status_code=401, detail="process_and_store_nutrition : Not authenticated")
 
-    nutrient_dict = nutrient_data.model_dump()
-
-    nutrient_dict["timestamp"] = get_current_time()
+    nutrient_dict["timestamp"] = get_today_datetime()
     nutrient_dict["user_id"] = user_id
-    
     
     product_nutrients.insert_one(nutrient_dict)
     return {"message": "Nutrient added successfully"}

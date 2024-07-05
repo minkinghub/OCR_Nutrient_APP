@@ -1,64 +1,97 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { BarChart, PieChart } from 'react-native-gifted-charts';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { screenWidth } from 'react-native-gifted-charts/src/utils';
 import * as Progress from 'react-native-progress';
+import { DonutGraph, BarGraph, LoadingComponent, loadNutrient } from '../components';
 
-const barSize = screenWidth * 0.9 * 0.1
-const blankSize = screenWidth * 0.9 * 0.035
-const labelSize = screenWidth * 0.9 * 0.095
+const userId = "66861ec2d90427eb49eda019";
+
+const labelSize = screenWidth * 0.9 * 0.095;
 
 const GraphPage = () => {
+    const [nutrient, setNutrient] = useState({});  // 서버에서 받아온 영양소 정보
+    const [tdee, setTdee] = useState(1);  // 서버에서 받아온 tdee
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const setInfos = async () => {
+            const data = await loadNutrient({ documentKey: userId });
+            console.log("data : ", data);
+            if (Object.keys(data).length === 0) {
+                Alert.alert("오류 발생");
+                return;
+            }
+            setNutrient(data.nutrient);
+            setTdee(Math.floor(data.tdee));
+            setIsLoading(false);
+            console.log(nutrient.calorie/tdee)
+        };
+
+        setInfos();
+    }, []);
+
+    useEffect(() => {
+        console.log(tdee);
+    }, [tdee]);
+
+    useEffect(() => {
+        console.log(nutrient);
+    }, [nutrient]);
+
+    if (isLoading) {
+        return <LoadingComponent />;
+    }
+
     const pieData = [
         {
-            value: 47,
-            color: '#6600FF',
+            value: 30,
+            color: '#3366FF',
         },
-        { value: 54, color: '#DDDDDD' },
+        { value: 100, color: '#DDDDDD' },
     ];
 
     const barData = [
         {
-            value: 40,
+            value: 30,
             label: '나트륨',
             labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
-            frontColor: '#6600FF',
+            frontColor: '#30A2FF',
         },
         {
-            value: 50,
+            value: 30,
             label: '포화지방',
             labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
-            frontColor: '#6600FF',
+            frontColor: '#ADC8FF',
         },
         {
-            value: 75,
+            value: 30,
             label: '트랜스지방',
             labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
-            frontColor: '#6600FF',
+            frontColor: '#84A9FF',
         },
         {
             value: 30,
             label: "당류",
             labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
-            frontColor: '#6600FF',
+            frontColor: '#6690FF',
         },
         {
-            value: 60,
+            value: 30,
             label: '칼슘',
             labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
-            frontColor: '#6600FF',
+            frontColor: '#3366FF',
         },
         {
-            value: 65,
+            value: 40,
             label: '콜레스테롤',
             labelWidth: labelSize,
             labelTextStyle: { color: 'gray' },
-            frontColor: '#6600FF',
+            frontColor: '#254EDB',
         },
     ];
 
@@ -66,96 +99,32 @@ const GraphPage = () => {
         <>
             <View style={[styles.boxContainer]}>
                 <Text style={styles.sectionLabel}>일일 칼로리 섭취량</Text>
-                <View style = {styles.chartContainer}>
-                    <Progress.Bar 
-                        progress={0.5} 
-                        width={screenWidth * 0.8} 
-                        color={'#FF6347'} 
+                <View style={styles.chartContainer}>
+                    <Progress.Bar
+                        progress={0 || ( nutrient.calorie / tdee)}
+                        width={screenWidth * 0.8}
+                        color={'#FF6347'}
                         style={styles.progressBar}
                     />
                 </View>
-                <View style = {{flexDirection:"row"}}>
-                    <Text style={styles.progressLabel}>50 %</Text>
-                    <Text style={styles.progressLabel}>1500 Kcal</Text>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.progressLabel}>{nutrient.calorie && tdee ? Math.floor((nutrient.calorie / tdee) * 100) : 0} %</Text>
+                    <Text style={styles.progressLabel}> {0 || nutrient.calorie} / {tdee} Kcal</Text>
+                </View>
+            </View>
+            <View style={styles.boxContainer}>      
+                <Text style={styles.sectionLabel}>일일 주요 영양소 섭취량</Text>
+                <View style={styles.chartContainer}>
+                    <DonutGraph data={pieData} label="탄수화물" />
+                    <View style={styles.separatorVertical} />
+                    <DonutGraph data={pieData} label="단백질" />
+                    <View style={styles.separatorVertical} />
+                    <DonutGraph data={pieData} label="지방" />
                 </View>
             </View>
             <View style={styles.boxContainer}>
-                <Text style={styles.sectionLabel}>일일 주요 영양소 섭취량</Text>
-                <View style={styles.chartContainer}>
-                    <View style={styles.pieChartWrapper}>
-                        <PieChart
-                            data={pieData}
-                            donut
-                            radius={screenWidth * 0.13}
-                            innerRadius={screenWidth * 0.08}
-                            centerLabelComponent={() => {
-                                return (
-                                    <View style={styles.centerLabel}>
-                                        <Text style={styles.centerLabelText}>
-                                            47%
-                                        </Text>
-                                        <Text style={styles.centerLabelSubText}>탄수화물</Text>
-                                    </View>
-                                );
-                            }}
-                        />
-                    </View>
-                    <View style={styles.separatorVertical} />
-                    <View style={styles.pieChartWrapper}>
-                        <PieChart
-                            data={pieData}
-                            donut
-                            radius={screenWidth * 0.13}
-                            innerRadius={screenWidth * 0.08}
-                            centerLabelComponent={() => {
-                                return (
-                                    <View style={styles.centerLabel}>
-                                        <Text style={styles.centerLabelText}>
-                                            47%
-                                        </Text>
-                                        <Text style={styles.centerLabelSubText}>단백질</Text>
-                                    </View>
-                                );
-                            }}
-                        />
-                    </View>
-                    <View style={styles.separatorVertical} />
-                    <View style={styles.pieChartWrapper}>
-                        <PieChart
-                            data={pieData}
-                            donut
-                            radius={screenWidth * 0.13}
-                            innerRadius={screenWidth * 0.08}
-                            centerLabelComponent={() => {
-                                return (
-                                    <View style={styles.centerLabel}>
-                                        <Text style={styles.centerLabelText}>
-                                            47%
-                                        </Text>
-                                        <Text style={styles.centerLabelSubText}>지방</Text>
-                                    </View>
-                                );
-                            }}
-                        />
-                    </View>
-                </View>
-            </View>
-            <View style = {styles.boxContainer}>
                 <Text style={styles.sectionLabel}>일일 기타 영양소 섭취량</Text>
-                <View style={styles.chartContainer}>
-                    <BarChart
-                        data={barData}
-                        barWidth={barSize}
-                        spacing={blankSize}
-                        roundedTop
-                        xAxisThickness={2}
-                        yAxisThickness={0}
-                        hideYAxisText={true}
-                        noOfSections={4}
-                        maxValue={100}
-                        isAnimated
-                    />
-                </View>
+                <BarGraph data={barData} />
             </View>
         </>
     );
@@ -191,11 +160,11 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     boxContainer: {
-        flexDirection: 'colume',
+        flexDirection: 'column',
         justifyContent: 'space-around',
         padding: 10,
         alignItems: 'center',
-        marginBottom:5,
+        marginBottom: 5,
         marginHorizontal: 5,
         width: '98%',
         backgroundColor: '#f8f8f8',
@@ -219,10 +188,6 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 3,
     },
-    pieChartWrapper: {
-        flex: 1,
-        alignItems: 'center',
-    },
     separatorVertical: {
         width: 1,
         height: '100%',
@@ -239,19 +204,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 3,
-    },
-    centerLabel: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    centerLabelText: {
-        fontSize: "80%",
-        color: 'Black',
-        fontWeight: 'bold',
-    },
-    centerLabelSubText: {
-        fontSize: "60%",
-        color: 'Black',
     },
     progressBar: {
         borderRadius: 5,

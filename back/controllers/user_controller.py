@@ -47,7 +47,7 @@ async def update_user_profile(request: Request, update: UserUpdate):
         raise HTTPException(status_code=404, detail="User not found")
     
     # 업데이트할 데이터 가져오기, 기본값은 제외
-    update_data = update.dict(exclude_unset=True)
+    update_data = update.model_dump(exclude_unset=True)
     
     # 비밀번호가 업데이트 데이터에 포함된 경우 해시화 처리
     if "password" in update_data:

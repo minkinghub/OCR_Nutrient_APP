@@ -1,31 +1,18 @@
-from pydantic import BaseModel, Field
-from bson import ObjectId
+from pydantic import BaseModel
 
-# Custom class to handle BSON ObjectId for Pydantic
-class PyObjectId(ObjectId):
-
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError('Invalid ObjectId')
-        return ObjectId(v)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type='string')
+class HistoryDocument(BaseModel):
+    userId: str
+    uploadTime: str
+    calorie: float = 0.0
+    charbodrate: float = 0.0
+    protein: float = 0.0
+    fat: float = 0.0
+    sodium: float = 0.0
+    saturatedFat: float = 0.0
+    transFat: float = 0.0
+    calcium: float = 0.0
+    cholesterol: float = 0.0
+    sugar: float = 0.0
 
 class historyReq(BaseModel):
     documentKey: str
-
-class historyDocument(BaseModel):
-    uid: PyObjectId = Field(..., alias='_id')
-    data : any
-    
-    class Config:
-        json_encoders = {
-            ObjectId: str
-        }

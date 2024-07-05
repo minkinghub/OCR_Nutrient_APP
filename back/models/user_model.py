@@ -144,8 +144,8 @@ class UserUpdate(BaseModel):
     name: StrictStr = Field(..., min_length=2, max_length=20, description="이름: 2~20자의 한글 또는 알파벳만 사용 가능합니다.")
     password: Optional[StrictStr] = Field(None, min_length=8, max_length=16, description="비밀번호: 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해주세요.")
     age: Optional[int] = Field(None, description="나이는 0 이상이어야 합니다.")
-    weight: Optional[float] = Field(None, description="몸무게는 0보다 커야 합니다.")
     height: Optional[float] = Field(None, description="신장은 0보다 커야 합니다.")
+    weight: Optional[float] = Field(None, description="몸무게는 0보다 커야 합니다.")
     is_athlete: Optional[bool] = Field(None, description="운동 여부")
 
 

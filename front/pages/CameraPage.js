@@ -1,11 +1,13 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, Modal, ActivityIndicator } from 'react-native';
+import { useUser } from "../components"
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 
 const CameraPage = () => {
+  const { user } = useUser();
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
@@ -73,10 +75,9 @@ const CameraPage = () => {
   async function uploadImage() {
     if (!photoBase64) return;
     setIsUploading(true);
-    const user_id = "66861ec2d90427eb49eda019";
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/upload', { base64: photoBase64, user_id: user_id });
+      const response = await axios.post('http://192.168.1.24:8000/upload', { base64: photoBase64, user_id: user });
       console.log(response.data);
       setUploadStatus('success');
     } catch (error) {

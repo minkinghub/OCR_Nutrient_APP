@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const loadNutrient = async (userData) => {
     try {
-        const response = await axios.post('http://localhost:8000/history', userData, {
+        const response = await axios.post('http://192.168.1.24:8000/history', userData, {
         headers: {
             'Content-Type': 'application/json',
         },

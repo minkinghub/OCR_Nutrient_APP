@@ -26,8 +26,8 @@ async def history_controller(documentKey):
 
     # MongoDB 쿼리
     query = {
-        "userId": documentKey,
-        "uploadTime": {
+        "user_id": documentKey,
+        "timestamp": {
             "$regex": f"^{today_date}"
         }
     }
@@ -50,20 +50,22 @@ async def history_controller(documentKey):
     tdee = get_user_tdee(documentKey)
     
     if not documents:
+        print("not Document")
         return {"total_nutrients": total_nutrients, "tdee": tdee}
     
     # 각 문서의 값을 합산
     for doc in documents:
-        total_nutrients["calorie"] += doc.get("calorie", 0)
-        total_nutrients["charbodrate"] += doc.get("charbodrate", 0)
+        print(doc)
+        total_nutrients["calorie"] += doc.get("calories", 0)
+        total_nutrients["charbodrate"] += doc.get("carbohydrate", 0)
         total_nutrients["protein"] += doc.get("protein", 0)
         total_nutrients["fat"] += doc.get("fat", 0)
         total_nutrients["sodium"] += doc.get("sodium", 0)
-        total_nutrients["saturatedFat"] += doc.get("saturatedFat", 0)
-        total_nutrients["transFat"] += doc.get("transFat", 0)
+        total_nutrients["saturatedFat"] += doc.get("saturated_fat", 0)
+        total_nutrients["transFat"] += doc.get("trans_fat", 0)
         total_nutrients["calcium"] += doc.get("calcium", 0)
         total_nutrients["cholesterol"] += doc.get("cholesterol", 0)
-        total_nutrients["sugar"] += doc.get("sugar", 0)
+        total_nutrients["sugar"] += doc.get("sugars", 0)
 
     return {"total_nutrients": total_nutrients, "tdee": tdee}
 

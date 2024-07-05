@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { screenWidth } from 'react-native-gifted-charts/src/utils';
 import * as Progress from 'react-native-progress';
-import { DonutGraph, BarGraph, LoadingComponent, loadNutrient } from '../components';
-
-const userId = "66861ec2d90427eb49eda019";
+import { DonutGraph, BarGraph, LoadingComponent, loadNutrient, useUser } from '../components';
 
 const labelSize = screenWidth * 0.9 * 0.095;
 
 const GraphPage = () => {
+    const { user } = useUser()
     const [nutrient, setNutrient] = useState({});  // 서버에서 받아온 영양소 정보
     const [tdee, setTdee] = useState(1);  // 서버에서 받아온 tdee
     const [isLoading, setIsLoading] = useState(true);
@@ -45,42 +44,42 @@ const GraphPage = () => {
     const [barData, setBarData] = useState(
         [
             {
-                value: 0,
+                value: 1,
                 label: '나트륨',
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },
                 frontColor: '#30A2FF',
             },
             {
-                value: 0,
+                value: 1,
                 label: '포화지방',
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },
                 frontColor: '#ADC8FF',
             },
             {
-                value: 0,
+                value: 1,
                 label: '트랜스지방',
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },
                 frontColor: '#84A9FF',
             },
             {
-                value: 0,
+                value: 1,
                 label: "당류",
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },
                 frontColor: '#6690FF',
             },
             {
-                value: 0,
+                value: 1,
                 label: '칼슘',
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },
                 frontColor: '#3366FF',
             },
             {
-                value: 0,
+                value: 1,
                 label: '콜레스테롤',
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },
@@ -95,93 +94,94 @@ const GraphPage = () => {
 
     useEffect(() => {
         const setInfos = async () => {
-            // const data = await loadNutrient({ documentKey: userId });
-            // console.log("data : ", data);
-            // if (Object.keys(data).length === 0) {
-            //     Alert.alert("오류 발생");
-            //     return;
-            // }
-            // const newNutrient = data.nutrient
-            // setNutrient(newNutrient);
-            // const newTdee = Math.floor(data.tdee) 
-            // setTdee(newTdee);
-            // console.log(Math.floor(newNutrient.charbodrate / (tdee * 0.65 / 4)))
-            // const newPieData = {
-            //     charbodrate : [
-            //         {
-            //             value: Math.floor(newNutrient.charbodrate / (tdee * 0.65 / 4)),
-            //             color: "#3366FF",
-            //         }, {
-            //             value: 100 - Math.floor(newNutrient.charbodrate / (tdee * 0.65 / 4)),
-            //             color: "#DDDDDD"
-            //         }
-            //     ],
-            //     protein : [
-            //         {
-            //             value: Math.floor(newNutrient.protein / (tdee * 0.2 / 4)),
-            //             color: "#3366FF",
-            //         }, {
-            //             value: 100 - Math.floor(newNutrient.protein / (tdee * 0.2 / 4)),
-            //             color: "#DDDDDD"
-            //         }
-            //     ],
-            //     fat : [
-            //         {
-            //             value: Math.floor(newNutrient.fat / (tdee * 0.35 / 4)),
-            //             color: "#3366FF",
-            //         }, {
-            //             value: 100 - Math.floor(newNutrient.fat / (tdee * 0.35 / 4)),
-            //             color: "#DDDDDD"
-            //         }
-            //     ],
-            // };
-            // setPieData(newPieData);
+            const data = await loadNutrient({ documentKey: user });
+            console.log("data : ", data);
+            if (Object.keys(data).length === 0) {
+                Alert.alert("오류 발생");
+                return;
+            }
+            const newTdee = Math.floor(data.tdee)
+            const newNutrient = data.nutrient
+            console.log(newNutrient)
+            setNutrient(newNutrient);
+            setTdee(newTdee);
 
-            // const newBarData = [
-            //     {
-            //         value: Math.floor(newNutrient.sodium / 100),
-            //         label: '나트륨',
-            //         labelWidth: labelSize,
-            //         labelTextStyle: { color: 'gray' },
-            //         frontColor: '#30A2FF',
-            //     },
-            //     {
-            //         value: Math.floor(newNutrient.saturatedFat / 100),
-            //         label: '포화지방',
-            //         labelWidth: labelSize,
-            //         labelTextStyle: { color: 'gray' },
-            //         frontColor: '#ADC8FF',
-            //     },
-            //     {
-            //         value: Math.floor(newNutrient.transFat / 100),
-            //         label: '트랜스지방',
-            //         labelWidth: labelSize,
-            //         labelTextStyle: { color: 'gray' },
-            //         frontColor: '#84A9FF',
-            //     },
-            //     {
-            //         value: Math.floor(newNutrient.sugar / 100),
-            //         label: "당류",
-            //         labelWidth: labelSize,
-            //         labelTextStyle: { color: 'gray' },
-            //         frontColor: '#6690FF',
-            //     },
-            //     {
-            //         value: Math.floor(newNutrient.culcium / 100),
-            //         label: '칼슘',
-            //         labelWidth: labelSize,
-            //         labelTextStyle: { color: 'gray' },
-            //         frontColor: '#3366FF',
-            //     },
-            //     {
-            //         value: Math.floor(newNutrient.cholesterol / 100),
-            //         label: '콜레스테롤',
-            //         labelWidth: labelSize,
-            //         labelTextStyle: { color: 'gray' },
-            //         frontColor: '#254EDB',
-            //     },
-            // ];
-            // setBarData(newBarData);
+            const newPieData = {
+                charbodrate : [
+                    {
+                        value: Math.floor((newNutrient.charbodrate / ((newTdee * 0.65) / 4)) * 100),
+                        color: "#3366FF",
+                    }, {
+                        value: 100 - Math.floor((newNutrient.charbodrate / ((newTdee * 0.65) / 4)) * 100),
+                        color: "#DDDDDD"
+                    }
+                ],
+                protein : [
+                    {
+                        value: Math.floor((newNutrient.protein / ((newTdee * 0.2) / 4)) * 100),
+                        color: "#3366FF",
+                    }, {
+                        value: 100 - Math.floor((newNutrient.protein / ((newTdee * 0.2) / 4)) * 100),
+                        color: "#DDDDDD"
+                    }
+                ],
+                fat : [
+                    {
+                        value: Math.floor((newNutrient.fat / ((newTdee * 0.35) / 9)) * 100),
+                        color: "#3366FF",
+                    }, {
+                        value: 100 - Math.floor((newNutrient.fat / ((newTdee * 0.35) / 9)) * 100),
+                        color: "#DDDDDD"
+                    }
+                ],
+            };
+            setPieData(newPieData);
+
+            const newBarData = [
+                {
+                    value: Math.floor((newNutrient.sodium / 2300) * 100),
+                    label: '나트륨',
+                    labelWidth: labelSize,
+                    labelTextStyle: { color: 'gray' },
+                    frontColor: '#30A2FF',
+                },
+                {
+                    value: Math.floor((newNutrient.saturatedFat / (newTdee * 0.1)) * 100) ,
+                    label: '포화지방',
+                    labelWidth: labelSize,
+                    labelTextStyle: { color: 'gray' },
+                    frontColor: '#ADC8FF',
+                },
+                {
+                    value: Math.floor((newNutrient.transFat / (tdee * 0.01)) * 100),
+                    label: '트랜스지방',
+                    labelWidth: labelSize,
+                    labelTextStyle: { color: 'gray' },
+                    frontColor: '#84A9FF',
+                },
+                {
+                    value: Math.floor((newNutrient.sugar / 36) * 100),
+                    label: "당류",
+                    labelWidth: labelSize,
+                    labelTextStyle: { color: 'gray' },
+                    frontColor: '#6690FF',
+                },
+                {
+                    value: Math.floor((newNutrient.calcium / 1000) * 100),
+                    label: '칼슘',
+                    labelWidth: labelSize,
+                    labelTextStyle: { color: 'gray' },
+                    frontColor: '#3366FF',
+                },
+                {
+                    value: Math.floor((newNutrient.cholesterol / 300) * 100),
+                    label: '콜레스테롤',
+                    labelWidth: labelSize,
+                    labelTextStyle: { color: 'gray' },
+                    frontColor: '#254EDB',
+                },
+            ];
+            setBarData(newBarData);
 
             setIsLoading(false);
         };
@@ -202,7 +202,7 @@ const GraphPage = () => {
     }
 
     return (
-        <>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <View style={[styles.boxContainer]}>
                 <Text style={styles.sectionLabel}>일일 칼로리 섭취량</Text>
                 <View style={styles.chartContainer}>
@@ -232,11 +232,17 @@ const GraphPage = () => {
                 <Text style={styles.sectionLabel}>일일 기타 영양소 섭취량</Text>
                 <BarGraph data={barData} />
             </View>
-        </>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
     progressContainer: {
         alignItems: 'center',
         marginVertical: 20,

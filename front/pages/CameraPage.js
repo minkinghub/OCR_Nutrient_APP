@@ -1,71 +1,43 @@
-// import React, { useState } from 'react';
-// import { Button, Image, View } from 'react-native';
-// import * as ImagePicker from 'expo-image-picker';
-// import axios from 'axios';
-
-// const CameraPage = () => {
-//   const [selectedImage, setSelectedImage] = useState(null);
-//   const [base64Image, setBase64Image] = useState(null);
-
-//   const pickImage = async () => {
-//     let result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-//       allowsEditing: true,
-//       aspect: [4, 3],
-//       quality: 1,
-//       base64: true, // base64 인코딩
-//     });
-
-//     if (!result.canceled) {
-//       setSelectedImage(result.assets[0].uri);
-//       setBase64Image(result.assets[0].base64); // base64 데이터 설정.
-//     }
-//   };
-
-//   const uploadImage = async () => {
-//     if (!base64Image) return;
-
-//     const user_id = localStorage.getItem('user_id'); // 로컬 스토리지에서 user_id 가져오기
-
-//     try {
-//       const response = await axios.post('http://127.0.0.1:8000/upload', { base64: base64Image, user_id: user_id });
-//       console.log(response.data);
-//     } catch (error) {
-//       console.error(error.response ? error.response.data : error.message);
-//     }
-//   };
-
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button title="Pick an image from camera roll" onPress={pickImage} />
-//       {selectedImage && <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200 }} />}
-//       <Button title="Upload Image" onPress={uploadImage} />
-//     </View>
-//   );
-// }
-
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useState, useRef } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Modal, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 
 const CameraPage = () => {
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
+  const [photoBase64, setPhotoBase64] = useState(null);
+  const [cameraActive, setCameraActive] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(null);
+
+  useEffect(() => {
+    if (uploadStatus) {
+      setTimeout(() => setUploadStatus(null), 3000);
+    }
+  }, [uploadStatus]);
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
+      <Modal visible={true} transparent={true} animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>We need your permission to show the camera</Text>
+            <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
+              <Text style={styles.permissionButtonText}>Grant Permission</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     );
   }
 
@@ -75,24 +47,94 @@ const CameraPage = () => {
 
   async function takePicture() {
     if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
+      const photo = await cameraRef.current.takePictureAsync({ base64: true });
       setPhoto(photo);
+      setPhotoBase64(photo.base64);
+      setCameraActive(false);
     }
+  }
+
+  async function pickImage() {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      setPhoto(result.assets[0]);
+      setPhotoBase64(result.assets[0].base64);
+      setCameraActive(false);
+    }
+  }
+
+  async function uploadImage() {
+    if (!photoBase64) return;
+    setIsUploading(true);
+    const user_id = "66861ec2d90427eb49eda019";
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/upload', { base64: photoBase64, user_id: user_id });
+      console.log(response.data);
+      setUploadStatus('success');
+    } catch (error) {
+      console.error(error.response ? error.response.data : error.message);
+      setUploadStatus('error');
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  function retakePicture() {
+    setPhoto(null);
+    setPhotoBase64(null);
+    setCameraActive(true);
   }
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.cameraSmall} facing={facing} ref={cameraRef}>
-      </CameraView>
-      {photo && <Image source={{ uri: photo.uri }} style={styles.preview} />}
-      <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={takePicture}>
-            <Text style={styles.text}>Take Picture</Text>
-          </TouchableOpacity>
+      {cameraActive ? (
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.iconButton} onPress={toggleCameraFacing}>
+              <Ionicons name="camera-reverse" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
+              <Ionicons name="camera" size={40} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton} onPress={pickImage}>
+              <Ionicons name="images" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+        </CameraView>
+      ) : (
+        <View style={styles.previewContainer}>
+          <Image source={{ uri: photo.uri }} style={styles.preview} />
+          <View style={styles.actionButtons}>
+            <TouchableOpacity style={styles.actionButton} onPress={uploadImage} disabled={isUploading}>
+              {isUploading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Ionicons name="cloud-upload" size={24} color="white" />
+              )}
+              <Text style={styles.buttonText}>Upload</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton} onPress={retakePicture}>
+              <Ionicons name="camera-reverse" size={24} color="white" />
+              <Text style={styles.buttonText}>Retake</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+      )}
+      {uploadStatus && (
+        <View style={[styles.statusMessage, uploadStatus === 'success' ? styles.successMessage : styles.errorMessage]}>
+          <Text style={styles.statusText}>
+            {uploadStatus === 'success' ? 'Upload successful!' : 'Upload failed. Please try again.'}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -100,38 +142,105 @@ const CameraPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
   },
-  cameraSmall: {
-    width: 200, // 너비를 조절하여 크기를 줄입니다.
-    height: 200, // 높이를 조절하여 크기를 줄입니다.
+  camera: {
+    width: 400,
+    flex: 1,
   },
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    marginBottom: 30,
   },
-  button: {
+  iconButton: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 15,
+    borderRadius: 40,
+  },
+  captureButton: {
+    backgroundColor: '#ff4757',
+    padding: 20,
+    borderRadius: 50,
+  },
+  previewContainer: {
     flex: 1,
-    alignSelf: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "green"
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
+    backgroundColor: '#000',
   },
   preview: {
-    width: 200,
-    height: 200,
-    alignSelf: 'center',
-    marginTop: 20,
+    width: '100%',
+    height: '80%',
+    resizeMode: 'contain',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: 100,
+    position: 'absolute',
+    bottom: 30,
+  },
+  actionButton: {
+    backgroundColor: '#2196F3',
+    padding: 15,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  statusMessage: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    right: 20,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  successMessage: {
+    backgroundColor: '#4CAF50',
+  },
+  errorMessage: {
+    backgroundColor: '#f44336',
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 20,
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  permissionButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+  },
+  permissionButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
-module.exports = {
-    CameraPage
-}
+module.exports = { CameraPage };

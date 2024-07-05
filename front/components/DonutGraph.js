@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     centerLabelText: {
-        fontSize: "80%",
+        fontSize: 16,
         color: 'Black',
         fontWeight: 'bold',
     },
     centerLabelSubText: {
-        fontSize: "60%",
+        fontSize: 12,
         color: 'Black',
     },
 });

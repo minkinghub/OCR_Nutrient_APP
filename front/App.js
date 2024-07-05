@@ -5,6 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import "react-native-svg";
 import 'react-native-gesture-handler';
 
+import { UserProvider } from './components';
 import LoginScreen from './components/LoginScreen';
 import SignUpScreen from './components/SignUpScreen';
 import MyPageScreen from './components/MyPageScreen';
@@ -57,29 +58,26 @@ const Stack = createStackNavigator();
 // App 컴포넌트는 네비게이션 컨테이너를 사용하여 앱의 전체 네비게이션 구조를 정의
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        {/* 로그인 화면 */}
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        
-        {/* 회원가입 화면 */}
-        <Stack.Screen
-          name="SignUp"
-          component={SignUpScreen}
-          options={{ headerShown: false }}
-        />
-        
-        {/* 메인 드로어 네비게이션 */}
-        <Stack.Screen
-          name="MainDrawer"
-          component={MainDrawer}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUpScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MainDrawer"
+            component={MainDrawer}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 }

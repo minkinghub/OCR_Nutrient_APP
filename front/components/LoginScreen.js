@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { sendingLogin } from "./";
+import { useUser } from '../components';
 import PasswordInput from './PasswordInput';
 
 // LoginScreen 컴포넌트: 사용자가 ID와 비밀번호를 입력하고 로그인 또는 회원가입을 할 수 있는 화면
 function LoginScreen({ navigation }) {
+  const { setUser } = useUser(); // UserContext에서 setUser 가져오기
   const [id, setId] = useState(''); // ID 상태를 관리
   const [password, setPassword] = useState(''); // 비밀번호 상태를 관리
 
@@ -15,16 +17,18 @@ function LoginScreen({ navigation }) {
     };
 
     try {
-      const flag = await sendingLogin(data);
-      if (flag) {
-        // 로그인 성공 시 메인 화면으로 이동
-        localStorage.setItem('user_id', flag.user_id); // user_id를 로컬 스토리지에 저장
+      const response = await sendingLogin(data);
+      console.log('Server response:', response); // 서버 응답을 콘솔에 출력
+      if (response && response.user_id) {
+        // 로그인 성공 시 사용자 정보 설정
+        setUser(response.user_id);
         navigation.navigate('MainDrawer', { id, password });
       } else {
         // 로그인 실패 시 경고 표시
-        Alert.alert('Login Failed', response.data.detail || 'An error occurred');
+        Alert.alert('Login Failed', response.detail || 'An error occurred');
       }
     } catch (error) {
+      console.error('Error during login:', error); // 에러를 콘솔에 출력
       // 요청 실패 시 경고 표시
       Alert.alert('Error', 'An error occurred during login');
     }

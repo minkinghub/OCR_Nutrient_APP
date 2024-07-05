@@ -57,7 +57,7 @@ async def get_nutrients_from_db(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     # 오늘 시작 시간을 서울 시간대로 설정
-    today_start = datetime.combine(date.today(), datetime.min.time()).astimezone(seoul_tz)
+    today_start =get_today_datetime()
     # 데이터베이스에서 user_id와 timestamp가 오늘 날짜인 영양소 정보를 찾음
     nutrients = product_nutrients.find({"user_id": user_id, "timestamp": {"$gte": today_start}})
     results = []

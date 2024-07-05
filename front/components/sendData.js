@@ -40,5 +40,5 @@ const sendingLogin = async (userData) => {
 
 module.exports = {
     sendingSignUp,
-    sendingLogin
+    sendingLogin,
 }

@@ -14,7 +14,6 @@ const CameraPage = () => {
   const [photo, setPhoto] = useState(null);
   const [photoBase64, setPhotoBase64] = useState(null);
   const [cameraActive, setCameraActive] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
 
@@ -59,8 +58,6 @@ const CameraPage = () => {
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
       base64: true,
     });

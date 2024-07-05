@@ -8,7 +8,7 @@ router = APIRouter()
 @router.post("/history")
 async def history_router(historyReq: historyReq):
     res = await history_controller(historyReq.documentKey)
-    return res
+    return JSONResponse(res)
 
 @router.post("/insertSample")
 async def insert_Sample(historyReq: historyReq):

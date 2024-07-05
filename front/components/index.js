@@ -3,6 +3,7 @@ import { loadNutrient } from "./loadData";
 import { DonutGraph } from "./DonutGraph";
 import { BarGraph } from "./BarGraph";
 import { LoadingComponent } from "./LoadingComponent";
+import { UserProvider, useUser } from "./userContext";
 
 module.exports = {
     sendingLogin,
@@ -10,5 +11,7 @@ module.exports = {
     loadNutrient,
     DonutGraph,
     BarGraph,
-    LoadingComponent
+    LoadingComponent,
+    UserProvider,
+    useUser
 }

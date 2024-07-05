@@ -3,6 +3,7 @@ from db import users_collection
 from models.user_model import User, UserUpdate
 from bson import ObjectId
 from fastapi import HTTPException, Request
+from models.user_model import User
 
 # 암호화 및 해시 처리를 위한 설정
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -28,7 +29,7 @@ async def update_user_profile(request: Request, update: UserUpdate):
         raise HTTPException(status_code=404, detail="User not found")
     
     # 업데이트할 데이터 가져오기, 기본값은 제외
-    update_data = update.dict(exclude_unset=True)
+    update_data = update.model_dump(exclude_unset=True)
     
     # 비밀번호가 업데이트 데이터에 포함된 경우 해시화 처리
     if "password" in update_data:
@@ -36,7 +37,7 @@ async def update_user_profile(request: Request, update: UserUpdate):
     
     # 업데이트할 데이터가 있는 경우 데이터베이스 업데이트
     if update_data:
-        await users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
+        users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
         
         # 업데이트된 사용자 데이터베이스에서 찾기
         updated_user = users_collection.find_one({"_id": ObjectId(user_id)})

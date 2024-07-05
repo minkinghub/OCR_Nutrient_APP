@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 import copy
 from models.upload_model import ImageBase64
 from controllers.upload_controller import upload_controller
-
+from controllers.nutrient_controller import process_and_store_nutrition, extract_nutrition_info
+from models.nutrient_data import Nutrient
+from controllers.auth_controller import get_current_user_id
 router = APIRouter()
 
 """
@@ -23,7 +25,12 @@ O
 
 @router.post("/upload")
 async def upload_router(image: ImageBase64):
-    text = upload_controller(image)
-    extractText = copy.deepcopy(text)
-    print(extractText)
-    return JSONResponse(content=text)
+    text = upload_controller(image)  # 이미지에서 텍스트를 추출하는 함수 호출
+    
+    if not text:
+        raise HTTPException(status_code=400, detail="No text extracted from image")
+    
+    nutrient_info = extract_nutrition_info(text)
+    nutrient_data = Nutrient(**nutrient_info)
+    result = await process_and_store_nutrition(nutrient_data, image.user_id)
+    return result

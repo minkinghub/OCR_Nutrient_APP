@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class Nutrient(BaseModel):
-    calorie: float = 0.0  # 칼로리
+    calories: float = 0.0  # 칼로리
     carbohydrate: float = 0.0  # 탄수화물
     protein: float = 0.0  # 단백질
     fat: float = 0.0  # 지방

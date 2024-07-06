@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const sendingSignUp = async (userData) => {
     try {
-        const response = await axios.post('http://localhost:8000/signup', userData, {
+        const response = await axios.post('http://192.168.1.24:8000/signup', userData, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -20,14 +20,15 @@ const sendingSignUp = async (userData) => {
 
 const sendingLogin = async (userData) => {
     try {
-        const response = await axios.post('http://127.0.0.1:8000/login', userData, {
+        const response = await axios.post('http://192.168.1.24:8000/login', userData, {
         headers: {
             'Content-Type': 'application/json',
         },
         });
 
         if (response.status === 200) {
-        return true
+        console.log('Login Successful', response.data);
+        return response.data
         } else {
         return false
         }
@@ -39,5 +40,5 @@ const sendingLogin = async (userData) => {
 
 module.exports = {
     sendingSignUp,
-    sendingLogin
+    sendingLogin,
 }

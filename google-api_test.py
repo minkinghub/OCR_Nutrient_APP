@@ -1,36 +1,33 @@
-from google.cloud import vision
-from google.oauth2 import service_account
-import io
-import json
+import cv2
+import matplotlib.pyplot as plt
 
-def perform_ocr(image_path, json_keyfile_path):
-    # 서비스 계정 키 파일을 사용하여 자격 증명 생성
-    credentials = service_account.Credentials.from_service_account_file(json_keyfile_path)
+# Load the image
+image_path = "C:/Users/rjend/Desktop/b.jpg"  # 여기에 이미지 파일 경로를 넣으세요
+image = cv2.imread(image_path)
 
-    # Vision API 클라이언트 생성
-    client = vision.ImageAnnotatorClient(credentials=credentials)
+# Convert to grayscale
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # 이미지 파일 읽기
-    with io.open(image_path, 'rb') as image_file:
-        content = image_file.read()
+# Use a binary threshold to create a binary image
+_, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
 
-    image = vision.Image(content=content)
+# Find contours
+contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # 이미지에서 텍스트 감지
-    response = client.text_detection(image=image)
-    texts = response.text_annotations
+# Filter and draw rectangles around the detected contours
+for contour in contours:
+    # Get the bounding box of the contour
+    x, y, w, h = cv2.boundingRect(contour)
+    # Filter out small contours by setting a minimum size (e.g., width and height > 50)
+    if w > 50 and h > 50:
+        # Draw a rectangle around the detected region
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-    if not texts:
-        print('No text detected')
-        return
+# Convert image to RGB for displaying with matplotlib
+image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    print('Detected text:')
-    for text in texts:
-        print(text.description)
-
-# JSON 키 파일 경로, 이미지 경로 및 출력 JSON 경로 설정
-json_keyfile_path = './back/iconic-episode-428206-c2-bc5268f142db.json'
-image_path = 'sample3.jfif'
-
-# OCR 수행 및 결과 저장
-perform_ocr(image_path, json_keyfile_path)
+# Display the image with detected regions
+plt.figure(figsize=(10, 10))
+plt.imshow(image_rgb)
+plt.axis('off')
+plt.show()

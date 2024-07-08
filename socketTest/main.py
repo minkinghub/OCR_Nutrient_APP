@@ -34,7 +34,7 @@ async def handle_image(sid, data):
     
     # 이미지 중앙에 번호 삽입
     draw = ImageDraw.Draw(image)
-    font = ImageFont.load_default()
+    font = ImageFont.load_default()  # 폰트 파일 경로와 크기 지정
     text = str(int(sid[-4:], 16))  # sid의 마지막 4자리를 16진수로 해석하여 번호로 사용
     text_width, text_height = draw.textsize(text, font)
     position = ((image.width - text_width) / 2, (image.height - text_height) / 2)

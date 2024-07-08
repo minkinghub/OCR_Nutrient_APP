@@ -36,6 +36,7 @@ function LoginScreen({ navigation }) {
   
   return (
     <View style={styles.container}>
+      <Text style={styles.appName}>NutriJeans</Text>
       <Text style={styles.label}>ID</Text>
       {/* ID 입력 필드 */}
       <TextInput style={styles.input} value={id} onChangeText={setId} placeholder="ID" />
@@ -68,6 +69,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
     backgroundColor: '#f5f5f5',
+  },
+  appName: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    textAlign: 'center',
+    marginBottom: 32,
   },
   label: {
     fontSize: 16,

@@ -5,14 +5,19 @@ import { useUser } from "../components"
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
+import { LoadingComponent } from '../components';  // 로딩 컴포넌트를 가져옴
+import { useNavigation } from '@react-navigation/native'; // useNavigation 훅 가져오기
+
 
 const CameraPage = () => {
   const { user } = useUser();
+  const navigation = useNavigation();   // navigation 객체 생성
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState(null);
   const [photoBase64, setPhotoBase64] = useState(null);
+  const [boxedPhotos, setBoxedPhotos] = useState([]);
   const [cameraActive, setCameraActive] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -52,6 +57,7 @@ const CameraPage = () => {
       setPhoto(photo);
       setPhotoBase64(photo.base64);
       setCameraActive(false);
+      await requestBoxedImage(photo.base64);
     }
   }
 
@@ -66,17 +72,38 @@ const CameraPage = () => {
       setPhoto(result.assets[0]);
       setPhotoBase64(result.assets[0].base64);
       setCameraActive(false);
+      await requestBoxedImage(result.assets[0].base64);
+    }
+  }
+
+  async function requestBoxedImage(base64) {
+    setIsUploading(true);
+
+    try {
+      const response = await axios.post('http://192.168.1.28:8000/boxedimage', { base64: base64, user_id: user });
+      setBoxedPhotos(response.data.cropped_images);
+      setUploadStatus('success');
+    } catch (error) {
+      console.error(error.response ? error.response.data : error.message);
+      setUploadStatus('error');
+    } finally {
+      setIsUploading(false);
     }
   }
 
   async function uploadImage() {
-    if (!photoBase64) return;
+    if (boxedPhotos.length === 0) return;
     setIsUploading(true);
 
     try {
-      const response = await axios.post('http://192.168.1.24:8000/upload', { base64: photoBase64, user_id: user });
+      const response = await axios.post('http://192.168.1.28:8000/upload', {
+        base64: boxedPhotos[0], // 첫 번째 잘린 이미지를 업로드
+        user_id: user,
+      });
       console.log(response.data);
       setUploadStatus('success');
+      navigation.navigate('Stats'); // 업로드 했을 때 통계 페이지로 이동
+
     } catch (error) {
       console.error(error.response ? error.response.data : error.message);
       setUploadStatus('error');
@@ -88,6 +115,7 @@ const CameraPage = () => {
   function retakePicture() {
     setPhoto(null);
     setPhotoBase64(null);
+    setBoxedPhotos([]);
     setCameraActive(true);
   }
 
@@ -109,20 +137,26 @@ const CameraPage = () => {
         </CameraView>
       ) : (
         <View style={styles.previewContainer}>
-          <Image source={{ uri: photo.uri }} style={styles.preview} />
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.actionButton} onPress={uploadImage} disabled={isUploading}>
-              {isUploading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Ionicons name="cloud-upload" size={24} color="white" />
-              )}
-              <Text style={styles.buttonText}>Upload</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton} onPress={retakePicture}>
-              <Ionicons name="camera-reverse" size={24} color="white" />
-              <Text style={styles.buttonText}>Retake</Text>
-            </TouchableOpacity>
+          <View style={styles.boxedPhotoContainer}>
+            {isUploading ? (
+              <LoadingComponent />  // 로딩 컴포넌트를 사용
+            ) : (
+              boxedPhotos.map((photo, index) => (
+                <Image
+                  key={index}
+                  style={styles.preview}
+                  source={{ uri: `data:image/png;base64,${photo}` }}
+                />
+              ))
+            )}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.iconButton2} onPress={retakePicture}>
+                <Ionicons name="camera-reverse" size={30} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconButton2} onPress={uploadImage}>
+                <Ionicons name="cloud-upload" size={30} color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
@@ -146,6 +180,11 @@ const styles = StyleSheet.create({
     width: 400,
     flex: 1,
   },
+  boxedPhotoContainer: {
+    width: 400,
+    backgroundColor: "#CCCCCC",
+    flex: 1,
+  },  
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -155,6 +194,11 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 15,
+    borderRadius: 40,
+  },
+  iconButton2: {
+    backgroundColor: '#2196F3',
     padding: 15,
     borderRadius: 40,
   },

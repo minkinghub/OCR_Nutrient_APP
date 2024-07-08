@@ -2,9 +2,11 @@ import base64
 import requests
 from fastapi import HTTPException
 from models.upload_model import ImageBase64
-import openai
-import io
 import re
+import cv2
+import easyocr
+import matplotlib.pyplot as plt
+import numpy as np
 
 def upload_controller(image: ImageBase64):
     try:
@@ -43,3 +45,54 @@ def upload_controller(image: ImageBase64):
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=400, detail={"code": "Io2", "message": str(e)})
+
+def crop_nutrition_info(image_data: bytes):
+    # Load the image from bytes
+    nparr = np.frombuffer(image_data, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Apply GaussianBlur to reduce noise and improve contour detection
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Use Canny edge detector
+    edges = cv2.Canny(blurred, 50, 150)
+
+    # Find contours
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Initialize easyOCR Reader
+    reader = easyocr.Reader(['ko'])
+
+    # Initialize list to store rectangles that contain "영양정보"
+    rects_with_text = []
+
+    # Iterate through contours to find rectangles
+    for contour in contours:
+        # Get the bounding box of the contour
+        x, y, w, h = cv2.boundingRect(contour)
+        # Filter out small contours by setting a minimum size (e.g., width and height > 50)
+        if w > 50 and h > 50:
+            # Crop the detected region
+            cropped_image = image[y:y+h, x:x+w]
+            # Use easyOCR to extract text
+            result = reader.readtext(cropped_image)
+            # Check if "영양정보" is in the extracted text
+            for (bbox, text, prob) in result:
+                if "영양정보" in text:
+                    rects_with_text.append((x, y, w, h))
+                    break
+
+    # Draw rectangles around the detected regions that contain "영양정보"
+    cropped_images = []
+    for rect in rects_with_text:
+        x, y, w, h = rect
+        cropped_image = image[y:y+h, x:x+w]
+        # Encode cropped image to base64
+        _, buffer = cv2.imencode('.png', cropped_image)
+        cropped_base64 = base64.b64encode(buffer).decode('utf-8')
+        cropped_images.append(cropped_base64)
+    
+    return cropped_images

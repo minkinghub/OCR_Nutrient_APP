@@ -40,6 +40,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-ui-lib": "^7.25.0",
     "react-native-web": "^0.19.12",
+    "socket.io-client": "^4.7.5",
     "victory-native": "^41.0.1"
   },
   "devDependencies": {

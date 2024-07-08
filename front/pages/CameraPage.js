@@ -6,9 +6,12 @@ import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import { LoadingComponent } from '../components';  // 로딩 컴포넌트를 가져옴
+import { useNavigation } from '@react-navigation/native'; // useNavigation 훅 가져오기
+
 
 const CameraPage = () => {
   const { user } = useUser();
+  const navigation = useNavigation();   // navigation 객체 생성
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
@@ -77,7 +80,7 @@ const CameraPage = () => {
     setIsUploading(true);
 
     try {
-      const response = await axios.post('http://192.168.1.18:8000/boxedimage', { base64: base64, user_id: user });
+      const response = await axios.post('http://192.168.1.28:8000/boxedimage', { base64: base64, user_id: user });
       setBoxedPhotos(response.data.cropped_images);
       setUploadStatus('success');
     } catch (error) {
@@ -93,12 +96,14 @@ const CameraPage = () => {
     setIsUploading(true);
 
     try {
-      const response = await axios.post('http://192.168.1.18:8000/upload', {
+      const response = await axios.post('http://192.168.1.28:8000/upload', {
         base64: boxedPhotos[0], // 첫 번째 잘린 이미지를 업로드
         user_id: user,
       });
       console.log(response.data);
       setUploadStatus('success');
+      navigation.navigate('Stats'); // 업로드 했을 때 통계 페이지로 이동
+
     } catch (error) {
       console.error(error.response ? error.response.data : error.message);
       setUploadStatus('error');

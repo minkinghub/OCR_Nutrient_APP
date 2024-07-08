@@ -157,7 +157,7 @@ const GraphPage = () => {
                 frontColor: '#84A9FF',
             },
             {
-                value: Math.floor((newNutrient.sugar / 36) * 100),
+                value: Math.floor((newNutrient.sugar / 100) * 100),
                 label: "당류",
                 labelWidth: labelSize,
                 labelTextStyle: { color: 'gray' },

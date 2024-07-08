@@ -1,26 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, Image, View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import { Camera } from 'expo-camera';
 import io from 'socket.io-client';
 
-const socket = io('http://127.0.0.1:8000', {
+const socket = io('http://192.168.1.18:8000', {
   transports: ['websocket'],
   path: '/socket.io',
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
 });
 
 const SocketTestPage = () => {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
   const [processedImage, setProcessedImage] = useState(null);
   const cameraRef = useRef(null);
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
+    requestPermission();
 
     socket.on('connect', () => {
       console.log('Connected to server');
@@ -31,6 +25,7 @@ const SocketTestPage = () => {
     });
 
     socket.on('processed_image', (data) => {
+      console.log('Received processed image');
       setProcessedImage(`data:image/jpeg;base64,${data.base64Image}`);
     });
 
@@ -43,32 +38,42 @@ const SocketTestPage = () => {
 
   useEffect(() => {
     let interval;
-    if (hasPermission) {
+    if (permission?.granted) {
       interval = setInterval(async () => {
         if (cameraRef.current) {
-          const photo = await cameraRef.current.takePictureAsync({
-            quality: 0.1,
-            base64: true,
-            skipProcessing: true,
-          });
-          socket.emit('image', { base64Image: photo.base64 });
+          try {
+            const photo = await cameraRef.current.takePictureAsync({
+              quality: 0.5,
+              base64: true,
+              skipProcessing: true,
+            });
+            console.log('Photo taken');
+            socket.emit('image', { base64Image: photo.base64 });
+          } catch (error) {
+            console.error('Error taking picture:', error);
+          }
         }
       }, 1000 / 30); // 30 FPS
     }
     return () => clearInterval(interval);
-  }, [hasPermission]);
+  }, [permission]);
 
-  if (hasPermission === null) {
-    return <View />;
+  if (!permission) {
+    return <Text>Requesting camera permission...</Text>;
   }
-  if (hasPermission === false) {
+
+  if (!permission.granted) {
     return <Text>No access to camera</Text>;
   }
 
   return (
     <View style={styles.container}>
       <Camera style={styles.camera} ref={cameraRef} />
-      {processedImage && <Image source={{ uri: processedImage }} style={styles.processedImage} />}
+      {processedImage ? (
+        <Image source={{ uri: processedImage }} style={styles.processedImage} />
+      ) : (
+        <Text style={styles.noImageText}>Waiting for processed image...</Text>
+      )}
     </View>
   );
 };
@@ -86,6 +91,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  noImageText: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    color: 'white',
   },
 });
 

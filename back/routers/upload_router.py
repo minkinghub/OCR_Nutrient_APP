@@ -1,8 +1,11 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from models.upload_model import ImageBase64
-from controllers.upload_controller import upload_controller
+from controllers.upload_controller import upload_controller, crop_nutrition_info
 from controllers.nutrient_controller import process_and_store_nutrition, extract_nutrition_info
 from models.nutrient_data import Nutrient
+import re
+import base64
 
 router = APIRouter()
 
@@ -31,3 +34,30 @@ async def upload_router(image: ImageBase64): #이미지에서 텍스트를 추�
     nutrient_data = Nutrient(**nutrient_info)
     final_result = await process_and_store_nutrition(nutrient_data, image.user_id)
     return final_result
+
+@router.post("/boxedimage")
+async def upload_router(image: ImageBase64):
+    try:
+        # base64 문자열에서 헤더와 데이터 분리
+        match = re.match(r'data:image/(\w+);base64,(.+)', image.base64)
+        if match:
+            image_format, base64_data = match.groups()
+        else:
+            # 헤더가 없는 경우 전체를 데이터로 간주
+            image_format = 'png'  # 기본값으로 PNG 설정
+            base64_data = image.base64
+
+        # 패딩 추가
+        base64_data += '=' * ((4 - len(base64_data) % 4) % 4)
+
+        # base64 문자열 디코딩
+        image_data = base64.b64decode(base64_data)
+
+        # 필요한 부분만 자르기
+        cropped_images = crop_nutrition_info(image_data)
+
+        return JSONResponse(content={"cropped_images": cropped_images})
+
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=400, detail={"code": "Io2", "message": str(e)})

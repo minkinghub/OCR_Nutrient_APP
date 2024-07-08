@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const sendingSignUp = async (userData) => {
     try {
-        const response = await axios.post('http://192.168.1.24:8000/signup', userData, {
+        const response = await axios.post('http://192.168.1.18:8000/signup', userData, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -20,7 +20,7 @@ const sendingSignUp = async (userData) => {
 
 const sendingLogin = async (userData) => {
     try {
-        const response = await axios.post('http://192.168.1.24:8000/login', userData, {
+        const response = await axios.post('http://192.168.1.18:8000/login', userData, {
         headers: {
             'Content-Type': 'application/json',
         },

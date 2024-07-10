@@ -26,7 +26,7 @@ def upload_controller(image: ImageBase64):
         image_data = base64.b64decode(base64_data)
         
         # OCR API 요청 준비
-        api_key = "up_ZrP7tTb7Hc7UhrdIZulcotZN8szlj"
+        api_key = "UpStage_API_Key"
         url = "https://api.upstage.ai/v1/document-ai/ocr"
         headers = {"Authorization": f"Bearer {api_key}"}
         
